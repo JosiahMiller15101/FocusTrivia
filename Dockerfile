@@ -1,37 +1,28 @@
-# Use official PHP image with Apache
 FROM php:8.2-apache
 
-# Enable Apache mod_rewrite for Laravel routing
-RUN a2enmod rewrite
-
-# Install system dependencies
+# Install system dependencies and PHP extensions needed by Laravel
 RUN apt-get update && apt-get install -y \
-    unzip \
-    git \
-    libzip-dev \
-    sqlite3 \
-    libsqlite3-dev
+    libzip-dev zip unzip git && \
+    docker-php-ext-install pdo pdo_mysql zip && \
+    a2enmod rewrite
 
-# Install PHP extensions required by Laravel
-RUN docker-php-ext-install pdo pdo_sqlite zip
-
-# Install Composer globally
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set the working directory
 WORKDIR /var/www/html
 
-# Copy all files into the container
+# Copy project files
 COPY . .
 
 # Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN rm -rf /var/www/html/index.html && \
+    cp -r public/* /var/www/html/ && \
+    cp public/index.php /var/www/html/index.php && \
+    cp public/.htaccess /var/www/html/.htaccess
 
-# Set correct permissions
+# Set permissions for Laravel storage and cache folders
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Expose Apache port
 EXPOSE 80
 
-# Use the default Apache start command
 CMD ["apache2-foreground"]
