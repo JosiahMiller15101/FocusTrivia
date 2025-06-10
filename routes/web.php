@@ -7,6 +7,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LeaderboardController;
+use Laravel\Socialite\Facades\Socialite;
 
 
 //home
@@ -38,6 +39,26 @@ Route::middleware('auth')->get('/question', [QuestionController::class, 'showAut
 //answer submission 
 Route::middleware('auth')->post('/submit-answer', [QuestionSubmissionController::class, 'store']);
 
+//Google Socialite
+Route::get('login/google/callback', function () {
+    $googleUser = Socialite::driver('google')->stateless()->user();
 
+    // Find or create the user in your database
+    $user = \App\Models\User::firstOrCreate(
+        [
+            'email' => $googleUser->getEmail(),
+        ],
+        [
+            'name' => $googleUser->getName(),
+            // You can add more fields as needed
+        ]
+    );
+
+    // Log the user in
+    Auth::login($user);
+
+    // Redirect to dashboard or home
+    return redirect('/dashboard');
+});
 
 
