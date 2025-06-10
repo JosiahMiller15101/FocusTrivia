@@ -44,7 +44,7 @@ class QuestionController extends Controller
         }
 
         $day = now()->day;
-        $index = $day % $questions->count();
+        $index = ($day-1) % $questions->count();
         $question = $questions[$index];
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
