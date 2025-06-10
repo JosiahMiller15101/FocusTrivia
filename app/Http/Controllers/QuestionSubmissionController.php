@@ -31,7 +31,7 @@ class QuestionSubmissionController extends Controller
         if ($isCorrect) {
             return back()->with('success', 'Correct! Well done. See you tomorrow.');
         } else {
-            return back()->with('error', "Not quite, it's alright though, we'll get 'em tomorrow. Correct answer: {$question->correct_answer}");
+            return back()->with('error', "Not quite, it's alright though, we'll get 'em tomorrow. CORRECT ANSWER: {$question->correct_answer}");
         }    
     }
 }
