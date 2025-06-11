@@ -46,21 +46,26 @@ Route::get('login/google/callback', function () {
     $googleUser = Socialite::driver('google')->stateless()->user();
 
     // Find or create the user in your database
-    $user = \App\Models\User::firstOrCreate(
-        [
-            'email' => $googleUser->getEmail(),
-        ],
-        [
-            'name' => $googleUser->getName(),
-            // You can add more fields as needed
-        ]
-    );
+    // $user = \App\Models\User::firstOrCreate(
+    //     [
+    //         'email' => $googleUser->getEmail(),
+    //     ],
+    //     [
+    //         'name' => $googleUser->getName(),
+    //         // You can add more fields as needed
+    //     ]
+    // );
 
-    // Log the user in
-    Auth::login($user);
+    // // Log the user in
+    // Auth::login($user);
+
+    dd("Hello");
 
     // Redirect to dashboard or home
     return redirect('/dashboard');
+});
+Route::get('login/google', function () {
+    return Socialite::driver('google')->redirect();
 });
 
 
