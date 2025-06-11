@@ -3,7 +3,7 @@
     {{ $first_name }}'s Dashboard
   </x-slot>
 
-  <div class="p-6 bg-white rounded shadow-lg mb-10">
+  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-2">Trivia Stats</h2>
     
     <p class="text-gray-700 mb-2">
@@ -36,7 +36,7 @@
     </p>
   </div>
 
-  <div class="p-6 bg-white rounded shadow-lg mt-10">
+  <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-2">Profile Information</h2>
     @if(session('success'))
         <div class="mb-4 text-green-600">

@@ -27,7 +27,7 @@
     </table>
   </div>
 
-  <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-blue-900">
+  <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-black">
   <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Average Accuracy</h2>
   <table class="w-full text-left border-collapse">
     <thead>
