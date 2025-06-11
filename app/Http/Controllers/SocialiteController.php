@@ -23,18 +23,18 @@ class SocialiteController extends Controller
             $user = User::firstOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
-                    'email' => $googleUser->getName(),
                     'first_name' => $googleUser->user['given_name'] ?? $googleUser->getName(),
                     'last_name' => $googleUser->user['family_name'] ?? '',
-                    'department' => 'Other', // or a sensible default
+                    'department' => 'Other', // default
+                    'email' => $googleUser->getName(),
                     'password' => bcrypt(str()->random(24)), // optional placeholder
-                    'google_id' => $googleUser->getId(), // if you want to store it
+                    //'google_id' => $googleUser->getId(), // store it
                 ]
             );
 
             Auth::login($user);
 
-            return redirect('/'); // or wherever you want to go after login
+            return redirect('/'); // Redirect to home after login
         } catch (\Exception $e) {
             return redirect('/login')->withErrors(['oauth' => 'Google login failed']);
         }
