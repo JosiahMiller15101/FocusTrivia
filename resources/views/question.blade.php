@@ -3,7 +3,7 @@
     Daily Question
   </x-slot:heading>
 
-  <div class="p-6 bg-white rounded-lg shadow">
+  <div class="bg-white rounded shadow-lg ring-2 ring-black p-8 max-w-2xl mx-auto mt-10">
     <p class="text-gray-600 text-sm mb-2">Category: {{ $question->category }}</p>
     <h2 class="text-xl font-semibold text-black mb-4">{{ $question->question }}</h2>
 
