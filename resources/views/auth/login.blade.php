@@ -31,4 +31,11 @@
     <x-form-button>Login</x-form-button>
   </div>
 </form>
+
+<div class="mt-6 flex items-center justify-center">
+    <a href="/login/google" class="inline-flex items-center px-4 py-2 bg-indigo-600 text-sm font-semibold text-white rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline-indigo-600">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M21.805 10.023h-9.765v3.977h5.617c-.242 1.242-1.484 3.648-5.617 3.648-3.383 0-6.148-2.797-6.148-6.25s2.765-6.25 6.148-6.25c1.93 0 3.227.82 3.969 1.523l2.711-2.633c-1.711-1.57-3.906-2.523-6.68-2.523-5.523 0-10 4.477-10 10s4.477 10 10 10c5.742 0 9.547-4.023 9.547-9.695 0-.652-.07-1.148-.156-1.652z"/></svg>
+        Sign in with Google
+    </a>
+</div>
 </x-layout>
