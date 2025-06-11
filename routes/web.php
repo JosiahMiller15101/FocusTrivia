@@ -46,4 +46,9 @@ Route::middleware('auth')->post('/submit-answer', [QuestionSubmissionController:
 Route::get('/login/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 Route::get('/login/google', [SocialiteController::class, 'redirectToGoogle']);
 
+//Youtube Socialite
+// YouTube Login
+Route::get('/login/youtube', [SocialiteController::class, 'redirectToYouTube']);
+Route::get('/login/youtube/callback', [SocialiteController::class, 'handleYouTubeCallback']);
+
 
