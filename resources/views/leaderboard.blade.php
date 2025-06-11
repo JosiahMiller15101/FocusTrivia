@@ -3,7 +3,7 @@
     Leaderboard
   </x-slot>
 
-  <div class="p-6 bg-white rounded shadow">
+  <div class="p-6 bg-white rounded shadow-lg">
     <h2 class="text-xl font-semibold mb-4">Top 10 Players by Accuracy</h2>
     <table class="w-full text-left border-collapse">
       <thead>

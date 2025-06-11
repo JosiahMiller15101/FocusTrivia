@@ -9,7 +9,7 @@
      and your department stack up against others across Focus departments. Are you ready to rise to the top?</strong>
   </p>
   </div>
-<div class="flex items-center justify-center mt-10 bg-gray-200">
+<div class="flex items-center justify-center mt-10 bg-gray-200 shadow-lg">
     <img class="w-90 h-90" src="{{ asset('images/2.png') }}" alt="FocusTrivia">
 </div>
 </x-layout>

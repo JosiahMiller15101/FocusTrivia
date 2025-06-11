@@ -9,6 +9,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LeaderboardController;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\SocialiteController;
 
 
 
@@ -42,30 +43,7 @@ Route::middleware('auth')->get('/question', [QuestionController::class, 'showAut
 Route::middleware('auth')->post('/submit-answer', [QuestionSubmissionController::class, 'store']);
 
 //Google Socialite
-Route::get('login/google/callback', function () {
-    $googleUser = Socialite::driver('google')->stateless()->user();
-
-    // Find or create the user in your database
-    // $user = \App\Models\User::firstOrCreate(
-    //     [
-    //         'email' => $googleUser->getEmail(),
-    //     ],
-    //     [
-    //         'name' => $googleUser->getName(),
-    //         // You can add more fields as needed
-    //     ]
-    // );
-
-    // // Log the user in
-    // Auth::login($user);
-
-    dd("Hello");
-
-    // Redirect to dashboard or home
-    return redirect('/dashboard');
-});
-Route::get('login/google', function () {
-    return Socialite::driver('google')->redirect();
-});
+Route::get('/login/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+Route::get('/login/google', [SocialiteController::class, 'redirectToGoogle']);
 
 
