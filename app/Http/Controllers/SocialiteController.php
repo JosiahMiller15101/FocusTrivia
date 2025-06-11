@@ -23,7 +23,7 @@ class SocialiteController extends Controller
             $user = User::firstOrCreate(
                 ['email' => $googleUser->getEmail()],
                 [
-                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getName(),
                     'first_name' => $googleUser->user['given_name'] ?? $googleUser->getName(),
                     'last_name' => $googleUser->user['family_name'] ?? '',
                     'department' => 'Other', // or a sensible default
