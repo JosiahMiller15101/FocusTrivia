@@ -43,7 +43,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <form method="POST" action="https://focustrivia.onrender.com/profile" id="profileForm">
+    <form method="POST" action="{{ route('profile.update') }}" id="profileForm">
         @csrf
         @method('PUT')
         <div class="mb-4 flex items-center gap-x-2">
