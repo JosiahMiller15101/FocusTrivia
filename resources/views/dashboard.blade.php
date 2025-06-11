@@ -38,17 +38,14 @@
 
   <div class="p-6 bg-white rounded shadow-lg mt-10">
     <h2 class="text-xl font-semibold mb-2">Profile Information</h2>
-    
     @if(session('success'))
         <div class="mb-4 text-green-600">
             {{ session('success') }}
         </div>
     @endif
-
-    <form method="POST" action="{{ route('profile.update') }}" id="profileForm">
+    <form method="POST" action="https://focustrivia.onrender.com/profile" id="profileForm">
         @csrf
         @method('PUT')
-
         <div class="mb-4 flex items-center gap-x-2">
             <label class="block text-sm font-medium text-gray-700 min-w-[110px]">First Name</label>
             <input type="text" name="first_name" value="{{ old('first_name', Auth::user()->first_name) }}"
@@ -81,7 +78,6 @@
             Save Changes
         </button>
     </form>
-
     <script>
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -93,6 +89,5 @@
             });
         });
     </script>
-
   </div>
 </x-layout>
