@@ -26,9 +26,7 @@ class SocialiteController extends Controller
                     'first_name' => $googleUser->user['given_name'] ?? $googleUser->getName(),
                     'last_name' => $googleUser->user['family_name'] ?? '',
                     'department' => 'Other', // default
-                    //'email' => $googleUser->getName(),
                     'password' => bcrypt(str()->random(24)), // optional placeholder
-                    //'google_id' => $googleUser->getId(), // store it
                 ]
             );
 
@@ -62,7 +60,6 @@ public function handleYouTubeCallback()
             'first_name' => $googleUser->user['given_name'] ?? $googleUser->getName(),
             'last_name' => $googleUser->user['family_name'] ?? '',
             'department' => 'Other', // default
-            //'email' => $googleUser->getEmail(),
             'password' => bcrypt(str()->random(24)), // secure random password placeholder
             ]
         );

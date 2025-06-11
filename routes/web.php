@@ -10,6 +10,7 @@ use App\Http\Controllers\LeaderboardController;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\ProfileController;
 
 
 
@@ -51,4 +52,6 @@ Route::get('/login/google', [SocialiteController::class, 'redirectToGoogle']);
 Route::get('/login/youtube', [SocialiteController::class, 'redirectToYouTube']);
 Route::get('/login/youtube/callback', [SocialiteController::class, 'handleYouTubeCallback']);
 
+//Edit Profile
+Route::put('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
 
