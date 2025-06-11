@@ -24,6 +24,9 @@ class SocialiteController extends Controller
                 ['email' => $googleUser->getEmail()],
                 [
                     'name' => $googleUser->getName(),
+                    'first_name' => $googleUser->user['given_name'] ?? $googleUser->getName(),
+                    'last_name' => $googleUser->user['family_name'] ?? '',
+                    'department' => 'Other', // or a sensible default
                     'password' => bcrypt(str()->random(24)), // optional placeholder
                     'google_id' => $googleUser->getId(), // if you want to store it
                 ]
