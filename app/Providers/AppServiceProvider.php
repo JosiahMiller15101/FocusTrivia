@@ -20,12 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Dump the current scheme and full URL for debugging
-        dd([
-            'scheme' => request()->getScheme(),
-            'full_url' => request()->fullUrl(),
-            'is_secure' => request()->isSecure(),
-        ]);
 
        if (config('app.env') === 'production') {
         URL::forceScheme('https');
