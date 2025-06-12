@@ -1,6 +1,6 @@
 <x-layout>
   <x-slot name="heading">
-    {{ $first_name }}'s Dashboard
+    {{ isset($user) ? $user->first_name : (isset($first_name) ? $first_name : 'Dashboard') }}'s Dashboard
   </x-slot>
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
@@ -10,11 +10,11 @@
     Member since: <strong>{{ Auth::user()->created_at->format('F j, Y') }}</strong>
     </p>
 
-    <p class="mb-2">Player Rank: <strong>#{{ $playerRank }}</strong></p>
+    <p class="mb-2">Player Rank: <strong>#{{ isset($playerRank) ? $playerRank : 'N/A' }}</strong></p>
 
-    <p class="mb-2">Department: <strong>{{ Auth::user()->department }}</strong></p>
+    <p class="mb-2">Department: <strong>{{ isset($user) ? $user->department : (Auth::user()->department ?? 'N/A') }}</strong></p>
 
-    <p class="mb-2">Department Rank: <strong>#{{  $departmentRank }}</strong></p>
+    <p class="mb-2">Department Rank: <strong>#{{ isset($departmentRank) ? $departmentRank : 'N/A' }}</strong></p>
 
     <p class="mb-2">
       Total Questions Answered: <strong>{{ $totalAnswered }}</strong>
@@ -36,6 +36,7 @@
     </p>
   </div>
 
+  @if (!isset($user) || (isset($user) && $user->id === Auth::id()))
   <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-2">Profile Information</h2>
     @if(session('success'))
@@ -97,4 +98,5 @@
     });
 </script>
   </div>
+  @endif
 </x-layout>

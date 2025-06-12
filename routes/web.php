@@ -7,10 +7,9 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\LeaderboardController;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SelectDashboardController;
 
 
 
@@ -54,3 +53,7 @@ Route::get('/login/youtube/callback', [SocialiteController::class, 'handleYouTub
 //Edit Profile
 Route::put('/profile', [ProfileController::class, 'update'])->middleware('auth')->name('profile.update');
 
+// Player public dashboard route
+Route::get('/player/{user}', [SelectDashboardController::class, 'show'])
+    ->middleware('auth')
+    ->name('player.dashboard');

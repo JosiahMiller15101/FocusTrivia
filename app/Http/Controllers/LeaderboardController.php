@@ -38,7 +38,7 @@ public function index()
     );
 
     // Leaderboard for top departments by average accuracy (excluding 'guest'), cached with Redis
-    $departments = Cache::remember('top_departments', now()->addMinutes(10), function () {
+    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () {
         return User::whereNotNull('department')
             ->with('submissions')
             ->get()

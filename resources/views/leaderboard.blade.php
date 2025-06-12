@@ -18,14 +18,18 @@
         @foreach($users as $index => $user)
             <tr class="border-b text-gray-800 text-sm">
                 <td class="py-2">{{ ($users->firstItem() ?? 0) + $index }}</td>
-                <td class="py-2">{{ $user->first_name }} {{ $user->last_name }}</td>
+                <td class="py-2">
+                  <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
+                    {{ $user->first_name }} {{ $user->last_name }}
+                  </a>
+                </td>
                 <td class="py-2">{{ $user->department }}</td>
                 <td class="py-2">{{ $user->accuracy }}%</td>
             </tr>
         @endforeach
       </tbody>
     </table>
-    <div class="mt-4 flex justify-end">
+    <div class="mt-4 flex justify-end flex-col space-y-2">
       {{ $users->links() }}
     </div>
   </div>
