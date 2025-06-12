@@ -10,43 +10,56 @@ class LeaderboardController extends Controller
 
 public function index()
 {
-    // Leaderboard for top 10 users 
+    // Get all users (excluding Guests), calculate accuracy, and paginate manually
     $users = User::with('submissions')
-    ->get()
-    ->map(function ($user) {
-        $correct = $user->submissions->where('is_correct', true)->count();
-        $total = $user->submissions->count();
-        $accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
-        $user->accuracy = $accuracy;
-        return $user;
-    })
-    ->sortByDesc('accuracy')
-    ->values()
-    ->take(10);
-
-    // New: Leaderboard for top 10 departments by average accuracy
-    $departments = User::whereNotNull('department')
-    ->with('submissions')
-    ->get()
-    ->groupBy('department')
-    ->map(function ($users, $dept) {
-        $accuracies = $users->map(function ($user) {
+        ->get()
+        ->filter(function ($user) {
+            return strtolower(trim($user->department)) !== 'guest';
+        })
+        ->map(function ($user) {
             $correct = $user->submissions->where('is_correct', true)->count();
             $total = $user->submissions->count();
-            return $total > 0 ? ($correct / $total) * 100 : 0;
-        });
+            $user->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
+            return $user;
+        })
+        ->sortByDesc('accuracy')
+        ->values();
 
-        return [
-            'department' => $dept,
-            'average_accuracy' => round($accuracies->average(), 1),
-        ];
-    })
-    ->sortByDesc('average_accuracy')
-    ->values()
-    ->take(10);
+    // Manual pagination for the users collection
+    $perPage = 10;
+    $page = request('page', 1);
+    $paginatedUsers = new \Illuminate\Pagination\LengthAwarePaginator(
+        $users->forPage($page, $perPage)->values(), // reset keys here!
+        $users->count(),
+        $perPage,
+        $page,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+
+    // Leaderboard for top 10 departments by average accuracy (excluding 'guest')
+    $departments = User::whereNotNull('department')
+        ->with('submissions')
+        ->get()
+        ->groupBy('department')
+        ->filter(function ($users, $dept) {
+            return strtolower(trim($dept)) !== 'guest';
+        })
+        ->map(function ($users, $dept) {
+            $accuracies = $users->map(function ($user) {
+                $correct = $user->submissions->where('is_correct', true)->count();
+                $total = $user->submissions->count();
+                return $total > 0 ? ($correct / $total) * 100 : 0;
+            });
+            return [
+                'department' => $dept,
+                'average_accuracy' => round($accuracies->average(), 1),
+            ];
+        })
+        ->sortByDesc('average_accuracy')
+        ->values(); // REMOVE ->take(10) to show all departments
 
     return view('leaderboard', [
-        'users' => $users,
+        'users' => $paginatedUsers,
         'departments' => $departments,
     ]);
 }

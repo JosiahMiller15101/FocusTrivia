@@ -48,7 +48,6 @@ Route::get('/login/google/callback', [SocialiteController::class, 'handleGoogleC
 Route::get('/login/google', [SocialiteController::class, 'redirectToGoogle']);
 
 //Youtube Socialite
-// YouTube Login
 Route::get('/login/youtube', [SocialiteController::class, 'redirectToYouTube']);
 Route::get('/login/youtube/callback', [SocialiteController::class, 'handleYouTubeCallback']);
 

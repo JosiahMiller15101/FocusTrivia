@@ -4,7 +4,7 @@
   </x-slot>
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
-    <h2 class="text-xl font-semibold mb-4">Top 10 Players by Accuracy</h2>
+    <h2 class="text-xl font-semibold mb-4">Top Players by Accuracy</h2>
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="text-sm text-gray-600 border-b">
@@ -15,14 +15,9 @@
         </tr>
       </thead>
       <tbody>
-        @php
-            $nonGuestUsers = collect($users)->filter(function($user) {
-                return strtolower(trim($user->department)) !== 'guest';
-            })->take(10);
-        @endphp
-        @foreach($nonGuestUsers as $index => $user)
+        @foreach($users as $index => $user)
             <tr class="border-b text-gray-800 text-sm">
-                <td class="py-2">{{ $loop->iteration }}</td>
+                <td class="py-2">{{ ($users->firstItem() ?? 0) + $index }}</td>
                 <td class="py-2">{{ $user->first_name }} {{ $user->last_name }}</td>
                 <td class="py-2">{{ $user->department }}</td>
                 <td class="py-2">{{ $user->accuracy }}%</td>
@@ -30,10 +25,13 @@
         @endforeach
       </tbody>
     </table>
+    <div class="mt-4 flex justify-end">
+      {{ $users->links() }}
+    </div>
   </div>
 
   <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-black">
-  <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Average Accuracy</h2>
+  <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Average Player Accuracy</h2>
   <table class="w-full text-left border-collapse">
     <thead>
       <tr class="text-sm text-gray-600 border-b">
