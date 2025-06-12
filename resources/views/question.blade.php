@@ -24,7 +24,7 @@
     Question has been answered for today. Come back tomorrow for another.
   </div>
 @else
-  <form method="POST" action="/submit-answer">
+  <form method="POST" action="/submit-answer" id="answerForm">
     @csrf
     <input type="hidden" name="question_id" value="{{ $question->id }}">
 
@@ -35,12 +35,30 @@
       </label>
     @endforeach
 
-    <div class="mt-4 flex justify-end">
-      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+    <div class="mt-4 flex items-center w-full">
+      <div class="flex-1 flex justify-center">
+        <span class="text-sm text-red-600 font-semibold text-center">Please press the submit button only once, even if the page takes a second to load.</span>
+      </div>
+      <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 ml-4" id="submitBtn">
         Submit
       </button>
     </div>
   </form>
+  <script>
+        let formSubmitted = false;
+    document.getElementById('answerForm')?.addEventListener('submit', function(e) {
+      if (formSubmitted) {
+        e.preventDefault(); // block any additional submits
+        return;
+      }
+      formSubmitted = true;
+      const btn = document.getElementById('submitBtn');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'Submitting...';
+      }
+    });
+  </script>
 @endif
 
   </div>
