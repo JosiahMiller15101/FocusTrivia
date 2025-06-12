@@ -6,7 +6,7 @@
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-2">Trivia Stats</h2>
     
-    <p class="text-gray-700 mb-2">
+    <p class="mb-2">
     Member since: <strong>{{ Auth::user()->created_at->format('F j, Y') }}</strong>
     </p>
 
@@ -16,15 +16,15 @@
 
     <p class="mb-2">Department Rank: <strong>#{{  $departmentRank }}</strong></p>
 
-    <p class="text-gray-700 mb-2">
+    <p class="mb-2">
       Total Questions Answered: <strong>{{ $totalAnswered }}</strong>
     </p>
 
-    <p class="text-gray-700 mb-2">
+    <p class="mb-2">
       Correct Answers: <strong>{{ $correctAnswers }}</strong>
     </p>
 
-    <p class="text-gray-700 mb-2">
+    <p class="mb-2">
       Correct Answer Percentage: 
       <strong>
         @if ($totalAnswered > 0)
