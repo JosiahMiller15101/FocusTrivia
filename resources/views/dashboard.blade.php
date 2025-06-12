@@ -72,10 +72,10 @@
             <label class="block text-sm font-medium text-gray-700 min-w-[110px]">Department</label>
             <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
                    class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg focus:ring-indigo-500 focus:border-indigo-500" disabled id="department_input">
-            <button type="button" class="ml-2 px-2 py-1 bg-indigo-500 text-white rounded edit-btn" data-target="department_input">Edit</button>
+            <button type="button" class="shadow-lg ml-2 px-2 py-1 bg-indigo-500 text-white rounded edit-btn" data-target="department_input">Edit</button>
         </div>
 
-        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500">
+        <button type="submit" class="shadow-lg px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-500">
             Save Changes
         </button>
     </form>
