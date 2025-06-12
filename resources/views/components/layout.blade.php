@@ -14,7 +14,7 @@
         <div class="flex items-center">
           <div class="shrink-0">
             <a href="/">
-            <img class="size-10" src="{{ asset('images/2.png') }}" alt="FocusTrivia">
+            <img class="size-10" src="{{ asset('images/1.png') }}" alt="FocusTrivia">
             </a>
           </div>
           <div class="hidden md:block">
