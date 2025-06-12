@@ -43,11 +43,16 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($departments as $index => $dept)
+      @php
+          $nonGuestDepartments = collect($departments)->filter(function($dept) {
+              return strtolower(trim($dept['department'])) !== 'guest';
+          })->take(10);
+      @endphp
+      @foreach($nonGuestDepartments as $index => $dept)
         <tr class="border-b text-gray-800 text-sm">
             <td class="py-2">{{ $loop->iteration }}</td>
-          <td class="py-2 px-4">{{ $dept['department'] }}</td>
-          <td class="py-2 px-4">{{ $dept['average_accuracy'] }}%</td>
+            <td class="py-2 px-4">{{ $dept['department'] }}</td>
+            <td class="py-2 px-4">{{ $dept['average_accuracy'] }}%</td>
         </tr>
       @endforeach
     </tbody>
