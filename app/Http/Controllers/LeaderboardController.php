@@ -21,9 +21,13 @@ public function index()
             $correct = $user->submissions->where('is_correct', true)->count();
             $total = $user->submissions->count();
             $user->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
+            $user->total_answered = $total;
             return $user;
         })
-        ->sortByDesc('accuracy')
+        ->sortByDesc(function ($user) {
+            // Sort by accuracy DESC, then by total_answered DESC
+            return sprintf('%08.1f%08d', $user->accuracy, $user->total_answered);
+        })
         ->values();
 
     // Manual pagination for the users collection
