@@ -12,13 +12,17 @@
           <x-form-field>
           <x-form-label for="department">Department</x-form-label>
             <select name="department" id="department">
+              <option value="Other">Guest</option>
               <option value="Accounting">Accounting</option>
               <option value="DigitalContent">Digital Content</option>
+              <option value="Other">Donor Communications</option>
               <option value="Events">Events</option>
               <option value="Finance">Finance</option>
               <option value="HR">H.R.</option>
               <option value="IT">I.T.</option>
               <option value="Marketing">Marketing</option>
+              <option value="Other">Media Ops</option>
+              <option value="Other">Missions</option>
               <option value="QGI">QGI</option>
               <option value="Other">Other</option>
             </select>
