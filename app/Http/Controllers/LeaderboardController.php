@@ -20,13 +20,15 @@ public function index()
         ->map(function ($user) {
             $correct = $user->submissions->where('is_correct', true)->count();
             $total = $user->submissions->count();
+            $wrong = $total - $correct;
             $user->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
             $user->total_answered = $total;
+            $user->score = ($correct * 10) - ($wrong * 10);
             return $user;
         })
         ->sortByDesc(function ($user) {
-            // Sort by accuracy DESC, then by total_answered DESC
-            return sprintf('%08.1f%08d', $user->accuracy, $user->total_answered);
+            // Sort by score DESC, then by total_answered DESC
+            return sprintf('%08d%08d', $user->score, $user->total_answered);
         })
         ->values();
 

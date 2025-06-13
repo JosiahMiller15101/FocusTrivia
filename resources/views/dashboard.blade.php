@@ -34,6 +34,8 @@
         @endif
       </strong>
     </p>
+
+    <p class="mb-2">Score: <strong>{{ isset($score) ? $score : 'N/A' }}</strong></p>
   </div>
 
   @if (!isset($user) || (isset($user) && $user->id === Auth::id()))

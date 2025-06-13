@@ -13,6 +13,8 @@ class SelectDashboardController extends Controller
         $submissions = $user->submissions;
         $totalAnswered = $submissions->count();
         $correctAnswers = $submissions->where('is_correct', true)->count();
+        $wrongAnswers = $totalAnswered - $correctAnswers;
+        $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
         $correctPercentage = $totalAnswered > 0 ? round(($correctAnswers / $totalAnswered) * 100, 1) : 0;
 
         // Calculate player rank (excluding guests)
@@ -21,12 +23,14 @@ class SelectDashboardController extends Controller
         })->map(function ($u) {
             $correct = $u->submissions->where('is_correct', true)->count();
             $total = $u->submissions->count();
+            $wrong = $total - $correct;
             $u->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
             $u->total_answered = $total;
+            $u->score = ($correct * 10) - ($wrong * 10);
             return $u;
         })->sortByDesc(function ($u) {
-            // Sort by accuracy DESC, then by total_answered DESC
-            return sprintf('%08.1f%08d', $u->accuracy, $u->total_answered);
+            // Sort by score DESC, then by total_answered DESC
+            return sprintf('%08d%08d', $u->score, $u->total_answered);
         })->values();
         $playerRank = $allUsers->search(function ($u) use ($user) {
             return $u->id === $user->id;
@@ -52,6 +56,7 @@ class SelectDashboardController extends Controller
             'user' => $user,
             'totalAnswered' => $totalAnswered,
             'correctAnswers' => $correctAnswers,
+            'score' => $score,
             'correctPercentage' => $correctPercentage,
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,

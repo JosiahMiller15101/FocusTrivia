@@ -4,13 +4,14 @@
   </x-slot>
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
-    <h2 class="text-xl font-semibold mb-4">Top Players by Accuracy</h2>
+    <h2 class="text-xl font-semibold mb-4">Top Players by Score</h2>
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="text-sm text-gray-600 border-b">
           <th class="pb-2">Rank</th>
           <th class="pb-2">Name</th>
           <th class="pb-2">Department</th>
+          <th class="pb-2">Score</th>
           <th class="pb-2">Accuracy</th>
         </tr>
       </thead>
@@ -24,6 +25,7 @@
                   </a>
                 </td>
                 <td class="py-2">{{ $user->department }}</td>
+                <td class="py-2">{{ $user->score }}</td>
                 <td class="py-2">{{ $user->accuracy }}%</td>
             </tr>
         @endforeach

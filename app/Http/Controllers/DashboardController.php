@@ -14,6 +14,8 @@ class DashboardController extends Controller
 
     $totalAnswered = QuestionSubmission::where('user_id', $user->id)->count();
     $correctAnswers = QuestionSubmission::where('user_id', $user->id)->where('is_correct', true)->count();
+    $wrongAnswers = $totalAnswered - $correctAnswers;
+    $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
     $accuracy = $totalAnswered > 0 ? ($correctAnswers / $totalAnswered) * 100 : 0;
 
     // 1. Get all users with their accuracy and total answered
@@ -50,6 +52,7 @@ class DashboardController extends Controller
         'first_name' => $user->first_name,
         'totalAnswered' => $totalAnswered,
         'correctAnswers' => $correctAnswers,
+        'score' => $score,
         'playerRank' => $playerRank,
         'departmentRank' => $departmentRank,
     ]);
