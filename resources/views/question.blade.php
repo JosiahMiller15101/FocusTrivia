@@ -30,7 +30,7 @@
 
     @foreach($answers as $answer)
       <label class="flex items-center space-x-2">
-        <input type="radio" name="answer" value="{{ $answer }}" required class="accent-slate-600">
+        <input type="radio" name="answer" value="{{ $answer }}" required class="accent-slate-600 focus:ring-slate-500 focus:outline-none">
         <span>{{ $answer }}</span>
       </label>
     @endforeach
