@@ -37,13 +37,13 @@
   </div>
 
   <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-black">
-  <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Average Player Accuracy</h2>
+  <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Total Player Score</h2>
   <table class="w-full text-left border-collapse">
     <thead>
       <tr class="text-sm text-gray-600 border-b">
         <th class="py-2 px-4">Rank</th>
         <th class="py-2 px-4">Department</th>
-        <th class="py-2 px-4">Average Accuracy</th>
+        <th class="py-2 px-4">Total Score</th>
       </tr>
     </thead>
     <tbody>
@@ -56,7 +56,7 @@
         <tr class="border-b text-gray-800 text-sm">
             <td class="py-2">{{ $loop->iteration }}</td>
             <td class="py-2 px-4">{{ $dept['department'] }}</td>
-            <td class="py-2 px-4">{{ $dept['average_accuracy'] }}%</td>
+            <td class="py-2 px-4">{{ $dept['total_score'] }}</td>
         </tr>
       @endforeach
     </tbody>

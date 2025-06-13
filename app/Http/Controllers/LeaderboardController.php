@@ -43,27 +43,21 @@ public function index()
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    // Leaderboard for top departments by average accuracy (excluding 'guest'), cached with Redis
-    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () {
-        return User::whereNotNull('department')
-            ->with('submissions')
-            ->get()
+    // Leaderboard for top departments by total score (excluding 'guest'), cached with Redis
+    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($users) {
+        return $users
             ->groupBy('department')
             ->filter(function ($users, $dept) {
                 return strtolower(trim($dept)) !== 'guest';
             })
             ->map(function ($users, $dept) {
-                $accuracies = $users->map(function ($user) {
-                    $correct = $user->submissions->where('is_correct', true)->count();
-                    $total = $user->submissions->count();
-                    return $total > 0 ? ($correct / $total) * 100 : 0;
-                });
+                $totalScore = $users->sum('score');
                 return [
                     'department' => $dept,
-                    'average_accuracy' => round($accuracies->average(), 1),
+                    'total_score' => $totalScore,
                 ];
             })
-            ->sortByDesc('average_accuracy')
+            ->sortByDesc('total_score')
             ->values();
     });
 
