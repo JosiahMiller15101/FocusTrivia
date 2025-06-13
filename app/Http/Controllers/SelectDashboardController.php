@@ -18,7 +18,7 @@ class SelectDashboardController extends Controller
         $correctPercentage = $totalAnswered > 0 ? round(($correctAnswers / $totalAnswered) * 100, 1) : 0;
 
         // Calculate player rank (excluding guests)
-        $allUsers = \App\Models\User::with('submissions')->get()->filter(function ($u) {
+        $allUsers = User::with('submissions')->get()->filter(function ($u) {
             return strtolower(trim($u->department)) !== 'guest';
         })->map(function ($u) {
             $correct = $u->submissions->where('is_correct', true)->count();

@@ -5,6 +5,7 @@
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-4">Top Players by Score</h2>
+      <a href="/explained" title="Explained" class="text-xs text-gray-200 hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="text-sm text-gray-600 border-b">
@@ -37,13 +38,14 @@
   </div>
 
   <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-black">
-  <h2 class="text-xl font-semibold mb-4">Top 10 Departments by Score per Player</h2>
+  <h2 class="text-xl font-semibold mb-4">Top 10 Departments</h2>
+  <a href="/explained" title="Explained" class="text-xs text-gray-200 hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
   <table class="w-full text-left border-collapse">
     <thead>
       <tr class="text-sm text-gray-600 border-b">
         <th class="py-2 px-4">Rank</th>
         <th class="py-2 px-4">Department</th>
-        <th class="py-2 px-4">Score</th>
+        <th class="py-2 px-4">Weighted Score</th>
         <th class="py-2 px-4">Total Score</th>
         <th class="py-2 px-4">Avg. Accuracy</th>
       </tr>
