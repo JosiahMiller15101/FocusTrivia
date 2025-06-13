@@ -72,11 +72,8 @@
 </div>
 
 <!-- Guest Leaderboard -->
-
-
-  <!-- Top Guest Players by Score -->
   <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-black">
-    <h2 class="text-xl font-semibold mb-4">Top Guest Players by Score</h2>
+    <h2 class="text-xl font-semibold mb-4">Top Guest Players</h2>
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="text-sm text-gray-600 border-b">
@@ -88,11 +85,20 @@
       </thead>
       <tbody>
         @php
-          $guestUsers = collect($users->getCollection() ?? $users)->filter(function($user) {
+          $allUsers = \App\Models\User::with('submissions')->get()->map(function ($user) {
+            $correct = $user->submissions->where('is_correct', true)->count();
+            $total = $user->submissions->count();
+            $wrong = $total - $correct;
+            $user->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
+            $user->score = ($correct * 10) - ($wrong * 10);
+            return $user;
+          })->filter(function($user) {
             return strtolower(trim($user->department)) === 'guest';
+          })->sortByDesc(function ($user) {
+            return sprintf('%08d%08d', $user->score, $user->submissions->count());
           })->values();
         @endphp
-        @foreach($guestUsers as $index => $user)
+        @foreach($allUsers as $index => $user)
           <tr class="border-b text-gray-800 text-sm">
             <td class="py-2">{{ $index + 1 }}</td>
             <td class="py-2">
@@ -107,5 +113,4 @@
       </tbody>
     </table>
   </div>
-
 </x-layout>
