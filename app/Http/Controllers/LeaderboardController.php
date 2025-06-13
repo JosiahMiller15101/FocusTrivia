@@ -28,7 +28,7 @@ public function index()
         })
         ->sortByDesc(function ($user) {
             // Sort by score DESC, then by total_answered DESC
-            return sprintf('%08d%08d', $user->score, $user->total_answered);
+            return [$user->score, $user->submissions->count()];
         })
         ->values();
 
