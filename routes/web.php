@@ -57,3 +57,8 @@ Route::put('/profile', [ProfileController::class, 'update'])->middleware('auth')
 Route::get('/player/{user}', [SelectDashboardController::class, 'show'])
     ->middleware('auth')
     ->name('player.dashboard');
+
+//Explained
+Route::get('/explained', function () {
+    return view('explained');
+});
