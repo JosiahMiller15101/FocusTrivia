@@ -20,7 +20,7 @@
 
     <h3 class="text-lg font-semibold mb-2">Departmental Rankings</h3>
     <ul class="list-disc pl-5 mb-4">
-      <li>Departments are ranked based on the weighted average score of all their members.</li>
+      <li>Departments are ranked based on the weighted average score of all of their members.</li>
       <li>The weighted score is calculated by this formula: Weighted score = (Total department score / √(# of players in department)).</li>
       <li>This method discourages bias toward larger departments while keeping consistent submissions necessary to stay on the leaderboard.</li>
       <li>I didn't think anyone would read this far, here's a donut for being an astute explorer: O</li>

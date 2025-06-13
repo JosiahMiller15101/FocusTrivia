@@ -35,15 +35,18 @@ class DashboardController extends Controller
     // 2. Determine player's rank (1-based)
     $playerRank = $allUsers->search(fn($u) => $u->id === $user->id) + 1;
 
-    // 3. Get department average accuracies
+    // 3. Get department stats using new score_per_player formula
     $departments = $allUsers->groupBy('department')
-        ->map(function ($users) {
+        ->map(function ($users, $dept) {
+            $totalScore = $users->sum('score');
+            $numPlayers = $users->count();
+            $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
             return [
-                'department' => $users->first()->department,
-                'average_accuracy' => round($users->avg('accuracy'), 1),
+                'department' => $dept,
+                'score_per_player' => $scorePerPlayer,
             ];
         })
-        ->sortByDesc('average_accuracy')
+        ->sortByDesc('score_per_player')
         ->values();
 
     $departmentRank = $departments->search(fn($d) => $d['department'] === $user->department) + 1;
