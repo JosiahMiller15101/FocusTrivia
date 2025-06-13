@@ -43,7 +43,7 @@ public function index()
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    // Leaderboard for top departments by total score (excluding 'guest'), cached with Redis
+    // Leaderboard for top departments by score per player (excluding 'guest'), cached with Redis
     $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($users) {
         return $users
             ->groupBy('department')
@@ -53,13 +53,16 @@ public function index()
             ->map(function ($users, $dept) {
                 $totalScore = $users->sum('score');
                 $averageAccuracy = $users->avg('accuracy');
+                $numPlayers = $users->count();
+                $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
                 return [
                     'department' => $dept,
                     'total_score' => $totalScore,
                     'average_accuracy' => $averageAccuracy,
+                    'score_per_player' => $scorePerPlayer,
                 ];
             })
-            ->sortByDesc('total_score')
+            ->sortByDesc('score_per_player')
             ->values();
     });
 
