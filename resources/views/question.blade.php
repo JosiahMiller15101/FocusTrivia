@@ -60,6 +60,5 @@
     });
   </script>
 @endif
-
   </div>
 </x-layout>

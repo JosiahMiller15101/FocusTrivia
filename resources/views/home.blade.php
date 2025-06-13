@@ -11,6 +11,6 @@
     </p>
   </div>
 <div class="flex items-center justify-center mt-10 bg-gray-200 shadow-lg">
-    <img class="w-90 h-90" src="{{ asset('images/2.png') }}" alt="FocusTrivia">
+    <img class="w-90 h-90" src="{{ asset('images/1.png') }}" alt="FocusTrivia">
 </div>
 </x-layout>
