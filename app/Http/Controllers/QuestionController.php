@@ -19,9 +19,11 @@ class QuestionController extends Controller
             abort(404, 'No questions found.');
         }
 
-        $dayOfMonth = Carbon::now()->day;
-        $index = $dayOfMonth % $questions->count();
-
+        // New logic: reload question at midnight and at 12pm
+        $now = Carbon::now();
+        $day = $now->day;
+        $half = $now->hour < 12 ? 0 : 1;
+        $index = (($day - 1) * 2 + $half) % $questions->count();
         $question = $questions[$index];
 
         $allAnswers = json_decode($question->incorrect_answers);
@@ -43,8 +45,11 @@ class QuestionController extends Controller
             abort(404, 'No questions found.');
         }
 
-        $day = now()->day;
-        $index = ($day-1) % $questions->count();
+        // New logic: reload question at midnight and at 12pm
+        $now = Carbon::now();
+        $day = $now->day;
+        $half = $now->hour < 12 ? 0 : 1;
+        $index = (($day - 1) * 2 + $half) % $questions->count();
         $question = $questions[$index];
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
