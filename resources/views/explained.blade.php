@@ -1,6 +1,6 @@
 <x-layout>
     <x-slot name="heading">
-    How Rankings Work
+    How The Rankings Work
   </x-slot>
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
