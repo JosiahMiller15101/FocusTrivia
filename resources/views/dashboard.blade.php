@@ -7,7 +7,7 @@
     <h2 class="text-xl font-semibold mb-2">Trivia Stats</h2>
     
     <p class="mb-2">
-    Member since: <strong>{{ Auth::user()->created_at->format('F j, Y') }}</strong>
+    Member since: <strong>{{ isset($user) ? $user->created_at->format('F j, Y') : Auth::user()->created_at->format('F j, Y') }}</strong>
     </p>
 
     <p class="mb-2">Player Rank: <strong>#{{ isset($playerRank) ? $playerRank : 'N/A' }}</strong></p>
