@@ -12,7 +12,7 @@
   </div>
   <div class="flex items-center justify-center mt-10">
     <div class="bg-gray-200 p-8 rounded-lg shadow-lg">
-      <img class="w-90 h-90" src="{{ asset('images/p.png') }}" alt="FocusTrivia">
+      <img class="w-90 h-90" src="{{ asset('images/transparentlogo.png') }}" alt="FocusTrivia">
     </div>
   </div>
 </x-layout>

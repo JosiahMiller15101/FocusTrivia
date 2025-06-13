@@ -14,8 +14,8 @@
         <div class="flex items-center">
           <div class="shrink-0">
             <a href="/">
-              <div class="bg-gray-900 p-1 rounded-md">
-                <img class="size-10" src="{{ asset('images/p.png') }}" alt="FocusTrivia">
+              <div class="bg-gray-700 p-1 rounded-md">
+                <img class="size-10" src="{{ asset('images/transparentlogo.png') }}" alt="FocusTrivia">
               </div>
             </a>
           </div>
