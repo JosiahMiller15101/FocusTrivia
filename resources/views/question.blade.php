@@ -39,7 +39,7 @@
       <div class="flex-1 flex justify-center">
         <span class="text-sm text-red-600 font-semibold text-center">Please press the submit button only once, even if the page takes a second to load.</span>
       </div>
-      <button type="submit" class="shadow-lg px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 ml-4" id="submitBtn">
+      <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500 ml-4" id="submitBtn">
         Submit
       </button>
     </div>
