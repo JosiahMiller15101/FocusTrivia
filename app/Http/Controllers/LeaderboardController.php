@@ -52,9 +52,11 @@ public function index()
             })
             ->map(function ($users, $dept) {
                 $totalScore = $users->sum('score');
+                $averageAccuracy = $users->avg('accuracy');
                 return [
                     'department' => $dept,
                     'total_score' => $totalScore,
+                    'average_accuracy' => $averageAccuracy,
                 ];
             })
             ->sortByDesc('total_score')

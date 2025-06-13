@@ -44,6 +44,7 @@
         <th class="py-2 px-4">Rank</th>
         <th class="py-2 px-4">Department</th>
         <th class="py-2 px-4">Total Score</th>
+        <th class="py-2 px-4">Avg. Accuracy</th>
       </tr>
     </thead>
     <tbody>
@@ -57,6 +58,7 @@
             <td class="py-2">{{ $loop->iteration }}</td>
             <td class="py-2 px-4">{{ $dept['department'] }}</td>
             <td class="py-2 px-4">{{ $dept['total_score'] }}</td>
+            <td class="py-2 px-4">{{ isset($dept['average_accuracy']) ? number_format($dept['average_accuracy'], 1) . '%' : 'N/A' }}</td>
         </tr>
       @endforeach
     </tbody>
