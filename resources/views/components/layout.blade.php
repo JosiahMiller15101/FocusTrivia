@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>My Website</title>
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" class="bg-gray-200">
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
 </head>
 <body class="bg-gray-200">
@@ -14,7 +14,7 @@
         <div class="flex items-center">
           <div class="shrink-0">
             <a href="/">
-            <img class="size-10" src="{{ asset('images/p.png') }}" alt="FocusTrivia">
+            <img class="size-10 bg-gray-200" src="{{ asset('images/p.png') }}" alt="FocusTrivia">
             </a>
           </div>
           <div class="hidden md:block">
