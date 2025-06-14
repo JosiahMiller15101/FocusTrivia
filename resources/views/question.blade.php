@@ -21,7 +21,7 @@
 
 @if($alreadySubmitted)
   <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-    Question has been answered for today. Come back tomorrow for another.
+    Question has already been answered. Questions reset at 12AM and 12PM, see you then!
   </div>
 @else
   <form method="POST" action="/submit-answer" id="answerForm">

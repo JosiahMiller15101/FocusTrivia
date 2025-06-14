@@ -19,7 +19,7 @@ class QuestionSubmissionController extends Controller
             return back()->with('error', 'Question not found.');
         }
 
-        // 🚨 Check if the user already submitted an answer for this question
+        // Check if the user already submitted an answer for this question
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
             ->where('question_id', $question->id)
             ->exists();
@@ -38,9 +38,9 @@ class QuestionSubmissionController extends Controller
         ]);
 
         if ($isCorrect) {
-            return back()->with('success', 'Correct! Well done. See you tomorrow.');
+            return back()->with('success', 'Correct! Well done. See you again in a few hours.');
         } else {
-            return back()->with('error', "Not quite, it's alright though, we'll get 'em tomorrow. CORRECT ANSWER: {$question->correct_answer}");
+            return back()->with('error', "Not quite, it's alright though, we'll get 'em next time. CORRECT ANSWER: {$question->correct_answer}");
     }    
     }
 }
