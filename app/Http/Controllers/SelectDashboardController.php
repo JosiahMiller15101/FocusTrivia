@@ -30,23 +30,32 @@ class SelectDashboardController extends Controller
             return $u;
         })->sortByDesc(function ($u) {
             // Sort by score DESC, then by total_answered DESC
-            return sprintf('%08d%08d', $u->score, $u->total_answered);
+            return [$u->score, $u->total_answered];
         })->values();
         $playerRank = $allUsers->search(function ($u) use ($user) {
             return $u->id === $user->id;
         });
         $playerRank = $playerRank !== false ? $playerRank + 1 : 'N/A';
 
-        // Calculate department rank
-        $departments = $allUsers->groupBy('department')->map(function ($users, $dept) {
-            $accuracies = $users->map(function ($u) {
-                return $u->accuracy;
-            });
-            return [
-                'department' => $dept,
-                'average_accuracy' => $accuracies->average(),
-            ];
-        })->sortByDesc('average_accuracy')->values();
+        // Calculate department rank (exclude guests, use score_per_player)
+        $departments = $allUsers->groupBy('department')
+            ->filter(function ($users, $dept) {
+                return strtolower(trim($dept)) !== 'guest';
+            })
+            ->map(function ($users, $dept) {
+                $totalScore = $users->sum('score');
+                $numPlayers = $users->count();
+                $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
+                $averageAccuracy = $users->avg('accuracy');
+                return [
+                    'department' => $dept,
+                    'score_per_player' => $scorePerPlayer,
+                    'total_score' => $totalScore,
+                    'average_accuracy' => $averageAccuracy,
+                ];
+            })
+            ->sortByDesc('score_per_player')
+            ->values();
         $departmentRank = $departments->search(function ($dept) use ($user) {
             return $dept['department'] === $user->department;
         });
@@ -57,7 +66,6 @@ class SelectDashboardController extends Controller
             'totalAnswered' => $totalAnswered,
             'correctAnswers' => $correctAnswers,
             'score' => $score,
-            'correctPercentage' => $correctPercentage,
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,
         ]);
