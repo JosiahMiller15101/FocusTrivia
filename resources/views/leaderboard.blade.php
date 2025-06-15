@@ -74,6 +74,7 @@
 <!-- Guest Leaderboard -->
   <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-4">Top Guest Players</h2>
+      <a href="/explained" title="Explained" class="text-xs underline hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
     <table class="w-full text-left border-collapse">
       <thead>
         <tr class="text-sm text-gray-600 border-b">
