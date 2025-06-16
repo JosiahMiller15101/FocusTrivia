@@ -28,7 +28,7 @@
     <form method="POST" action="{{ route('question.comment') }}" class="mb-4">
       @csrf
       <input type="hidden" name="question_id" value="{{ $question->id }}">
-      <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Leave a comment..." required></textarea>
+      <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Leave a comment, let me know how angry you are at me..." required></textarea>
       <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
     </form>
     <div class="space-y-4">
