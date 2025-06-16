@@ -70,5 +70,8 @@ Route::get('/explained', function () {
 // Post question comments
 Route::post('/question/comment', [QuestionCommentController::class, 'store'])->middleware('auth')->name('question.comment');
 
+// AJAX: React to a comment
+Route::post('/question/comment/react', [QuestionCommentController::class, 'react'])->middleware('auth')->name('question.comment.react');
+
 // Profile image upload
 Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');

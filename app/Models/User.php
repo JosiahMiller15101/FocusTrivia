@@ -56,4 +56,9 @@ class User extends Authenticatable
         // Return a default image URL (public/images/p.png)
         return asset('images/p.png');
     }
+
+    public function commentReactions()
+    {
+        return $this->hasMany(CommentReaction::class);
+    }
 }

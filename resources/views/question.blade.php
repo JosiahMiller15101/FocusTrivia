@@ -36,6 +36,29 @@
         <div class="p-3 bg-gray-100 rounded shadow">
           <div class="text-sm text-gray-700 font-semibold mb-1">{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></div>
           <div class="text-gray-900">{{ $comment->comment }}</div>
+          <!-- Reaction Buttons with Counts -->
+          @php
+            $reactionTypes = [
+              'like' => '👍',
+              'cheer' => '👏🏻',
+              'celebrate' => '🎉',
+              'appreciate' => '✨',
+              'smile' => '🙂',
+            ];
+          @endphp
+          <div class="hover:scale-x-105 transition-all duration-300 *:transition-all *:duration-300 flex justify-start text-2xl items-center shadow-xl z-10 bg-[#e8e4df] dark:bg-[#191818] gap-2 p-2 rounded-full mt-2">
+            @foreach($reactionTypes as $type => $emoji)
+              <button
+                class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-4 before:text-[.6rem] before:px-1 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-7 before:rounded-lg hover:-translate-y-5 cursor-pointer hover:scale-125 bg-white dark:bg-[#191818] rounded-full p-2 px-3"
+                data-comment-id="{{ $comment->id }}"
+                data-type="{{ $type }}"
+                type="button"
+              >
+                {{ $emoji }}
+                <span class="text-base ml-1 align-middle reaction-count">{{ $comment->reactions->where('type', $type)->count() }}</span>
+              </button>
+            @endforeach
+          </div>
         </div>
       @empty
         <div class="text-gray-500">No comments yet. Be the first to comment!</div>
@@ -81,3 +104,30 @@
 @endif
   </div>
 </x-layout>
+
+@section('scripts')
+<script>
+document.querySelectorAll('.reaction-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const commentId = this.dataset.commentId;
+    const type = this.dataset.type;
+    const countSpan = this.querySelector('.reaction-count');
+    fetch("{{ route('question.comment.react') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ comment_id: commentId, type: type })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.count !== undefined) {
+        countSpan.textContent = data.count;
+      }
+    });
+  });
+});
+</script>
+@endsection

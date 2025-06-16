@@ -17,4 +17,9 @@ class QuestionComment extends Model
     {
         return $this->belongsTo(Question::class);
     }
+
+    public function reactions()
+    {
+        return $this->hasMany(CommentReaction::class, 'comment_id');
+    }
 }

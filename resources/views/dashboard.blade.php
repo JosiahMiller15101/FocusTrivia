@@ -72,7 +72,7 @@
         $profileImage = $user->profile_image;
         $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
       @endphp
-      <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
+      <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-56 h-56 rounded-full object-cover mb-4">
     </div>
     @endif
   </div>
