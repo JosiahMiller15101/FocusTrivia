@@ -45,19 +45,21 @@
         <div class="p-3 bg-gray-100 rounded shadow relative">
           <div class="text-sm text-gray-700 font-semibold mb-1">{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></div>
           <div class="text-gray-900 mb-2">{{ $comment->comment }}</div>
+          <div class="absolute bottom-1 right-1 flex gap-1">
           <!-- Reaction Buttons with Counts -->
-          <div class="flex justify-end items-end gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-lg shadow mt-1">
+          <div class="flex justify-end items-end gap-0.5 p-0.5 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
             @foreach($reactionTypes as $type => $emoji)
               <button
-                class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-3 before:text-[.5rem] before:px-0.5 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-5 before:rounded hover:-translate-y-2 cursor-pointer hover:scale-110 bg-white dark:bg-[#191818] rounded-full p-1 px-2 text-base"
+                class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-2.5 before:text-[.45rem] before:px-0.5 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-4 before:rounded hover:-translate-y-1 cursor-pointer hover:scale-105 bg-white dark:bg-[#191818] rounded-full p-[2px] px-[5px] text-[11px]"
                 data-comment-id="{{ $comment->id }}"
                 data-type="{{ $type }}"
                 type="button"
               >
                 {{ $emoji }}
-                <span class="text-xs ml-0.5 align-middle reaction-count" style="color: white; text-shadow: 0 0 2px #000;">{{ $comment->reactions->where('type', $type)->count() }}</span>
+                <span class="text-[10px] ml-0.5 align-middle reaction-count" style="color: white; text-shadow: 0 0 2px #000;">{{ $comment->reactions->where('type', $type)->count() }}</span>
               </button>
             @endforeach
+          </div>
           </div>
         </div>
       @empty
@@ -107,28 +109,35 @@
 
 @section('scripts')
 <script>
-document.querySelectorAll('.reaction-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const commentId = this.dataset.commentId;
-    const type = this.dataset.type;
-    // Find the count span for this button only
-    const countSpan = this.querySelector('.reaction-count');
-    fetch("{{ route('question.comment.react') }}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({ comment_id: commentId, type: type })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.count !== undefined) {
-        countSpan.textContent = data.count;
-      }
+  document.querySelectorAll('.reaction-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const commentId = this.dataset.commentId;
+      const type = this.dataset.type;
+
+      fetch("{{ route('question.comment.react') }}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ comment_id: commentId, type: type })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.counts) {
+          // For each button in this comment, update its count
+          document
+            .querySelectorAll(`.reaction-btn[data-comment-id="${commentId}"]`)
+            .forEach(b => {
+              const btnType = b.dataset.type;
+              const span = b.querySelector('.reaction-count');
+              // data.counts is an object like { like: 2, angry: 0, ... }
+              span.textContent = data.counts[btnType] || 0;
+            });
+        }
+      });
     });
   });
-});
 </script>
 @endsection

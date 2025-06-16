@@ -27,35 +27,32 @@ class QuestionCommentController extends Controller
     public function react(Request $request)
     {
         $request->validate([
-            'comment_id' => 'required|exists:question_comments,id',
-            'type' => 'required|string',
-        ]);
+        'comment_id' => 'required|exists:question_comments,id',
+        'type' => 'required|string|in:like,laughing,crying,angry,dislike',
+    ]);
 
-        $user = Auth::user();
-        $commentId = $request->comment_id;
-        $type = $request->type;
+    $userId = Auth::id();
+    $commentId = $request->comment_id;
+    $newType = $request->type;
 
-        $reaction = \App\Models\CommentReaction::where('comment_id', $commentId)
-            ->where('user_id', $user->id)
-            ->where('type', $type)
-            ->first();
+    // Delete any existing reaction by this user on this comment (regardless of type)
+    \App\Models\CommentReaction::where('comment_id', $commentId)
+        ->where('user_id', $userId)
+        ->delete();
 
-        if ($reaction) {
-            $reaction->delete(); // Toggle off
-            $status = 'removed';
-        } else {
-            \App\Models\CommentReaction::create([
-                'comment_id' => $commentId,
-                'user_id' => $user->id,
-                'type' => $type,
-            ]);
-            $status = 'added';
-        }
+    // Add new reaction
+    \App\Models\CommentReaction::create([
+        'comment_id' => $commentId,
+        'user_id' => $userId,
+        'type' => $newType,
+    ]);
 
-        $count = \App\Models\CommentReaction::where('comment_id', $commentId)
-            ->where('type', $type)
-            ->count();
+    // Return all updated counts for the comment
+    $counts = \App\Models\CommentReaction::where('comment_id', $commentId)
+        ->selectRaw('type, COUNT(*) as count')
+        ->groupBy('type')
+        ->pluck('count', 'type');
 
-        return response()->json(['status' => $status, 'count' => $count]);
+    return response()->json(['status' => 'added', 'counts' => $counts]);
     }
 }
