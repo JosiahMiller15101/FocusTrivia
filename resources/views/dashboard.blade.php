@@ -3,39 +3,51 @@
     {{ isset($user) ? $user->first_name : (isset($first_name) ? $first_name : 'Dashboard') }}'s Dashboard
   </x-slot>
 
-  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
-    <h2 class="text-xl font-semibold mb-2">Trivia Stats</h2>
-    
-    <p class="mb-2">
-    Member since: <strong>{{ isset($user) ? $user->created_at->format('F j, Y') : Auth::user()->created_at->format('F j, Y') }}</strong>
-    </p>
-
-    <p class="mb-2">Player Rank: <strong>#{{ isset($playerRank) ? $playerRank : 'N/A' }}</strong></p>
-
-    <p class="mb-2">Department: <strong>{{ isset($user) ? $user->department : (Auth::user()->department ?? 'N/A') }}</strong></p>
-
-    <p class="mb-2">Department Rank: <strong>#{{ isset($departmentRank) ? $departmentRank : 'N/A' }}</strong></p>
-
-    <p class="mb-2">
-      Total Questions Answered: <strong>{{ $totalAnswered }}</strong>
-    </p>
-
-    <p class="mb-2">
-      Correct Answers: <strong>{{ $correctAnswers }}</strong>
-    </p>
-
-    <p class="mb-2">
-      Correct Answer Percentage: 
-      <strong>
-        @if ($totalAnswered > 0)
-          {{ number_format(($correctAnswers / $totalAnswered) * 100, 1) }}%
-        @else
-          N/A
-        @endif
-      </strong>
-    </p>
-
-    <p class="mb-2">Score: <strong>{{ isset($score) ? $score : 'N/A' }}</strong></p>
+  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black flex flex-row items-start gap-8">
+    <div class="flex-1">
+      <h2 class="text-xl font-semibold mb-2">Trivia Stats</h2>
+      <p class="mb-2">
+      Member since: <strong>{{ isset($user) ? $user->created_at->format('F j, Y') : Auth::user()->created_at->format('F j, Y') }}</strong>
+      </p>
+      <p class="mb-2">Player Rank: <strong>#{{ isset($playerRank) ? $playerRank : 'N/A' }}</strong></p>
+      <p class="mb-2">Department: <strong>{{ isset($user) ? $user->department : (Auth::user()->department ?? 'N/A') }}</strong></p>
+      <p class="mb-2">Department Rank: <strong>#{{ isset($departmentRank) ? $departmentRank : 'N/A' }}</strong></p>
+      <p class="mb-2">
+        Total Questions Answered: <strong>{{ $totalAnswered }}</strong>
+      </p>
+      <p class="mb-2">
+        Correct Answers: <strong>{{ $correctAnswers }}</strong>
+      </p>
+      <p class="mb-2">
+        Correct Answer Percentage: 
+        <strong>
+          @if ($totalAnswered > 0)
+            {{ number_format(($correctAnswers / $totalAnswered) * 100, 1) }}%
+          @else
+            N/A
+          @endif
+        </strong>
+      </p>
+      <p class="mb-2">Score: <strong>{{ isset($score) ? $score : 'N/A' }}</strong></p>
+    </div>
+    @if (!isset($user) || (isset($user) && $user->id === Auth::id()))
+    <div class="flex flex-col items-center min-w-[220px]">
+      @if(Auth::user()->profile_image)
+        <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover mb-4">
+      @else
+        <span class="text-gray-500 mb-4">No profile image uploaded.</span>
+      @endif
+      <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="w-full">
+        @csrf
+        @method('PUT')
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700">Profile Image</label>
+          <input type="file" name="profile_image" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-lg">
+        </div>
+        <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500 w-full">Upload</button>
+      </form>
+    </div>
+    @endif
   </div>
 
   @if (!isset($user) || (isset($user) && $user->id === Auth::id()))

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
 use App\Models\Question;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TriviaSeeder extends Seeder
 {
@@ -30,6 +31,7 @@ class TriviaSeeder extends Seeder
 
         // Insert all questions
         foreach ($allQuestions as $item) {
+            $code = Str::uuid()->toString();
             Question::create([
                 'category' => $item['category'] ?? 'General',
                 'type' => 'multiple',
@@ -37,6 +39,7 @@ class TriviaSeeder extends Seeder
                 'question' => html_entity_decode($item['question']['text']),
                 'correct_answer' => html_entity_decode($item['correctAnswer']),
                 'incorrect_answers' => json_encode(array_map('html_entity_decode', $item['incorrectAnswers'])),
+                'code' => $code,
             ]);
         }
     }
