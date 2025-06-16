@@ -11,6 +11,7 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectDashboardController;
 use App\Http\Controllers\SelectDepartmentDashboardController;
+use App\Http\Controllers\QuestionCommentController;
 
 
 
@@ -66,3 +67,6 @@ Route::get('/department/{department}', [SelectDepartmentDashboardController::cla
 Route::get('/explained', function () {
     return view('explained');
 });
+
+// Post question comments
+Route::post('/question/comment', [QuestionCommentController::class, 'store'])->middleware('auth')->name('question.comment');

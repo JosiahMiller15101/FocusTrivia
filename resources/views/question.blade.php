@@ -23,6 +23,25 @@
   <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
     Question has already been answered. Questions reset at 12AM and 12PM, see you then!
   </div>
+  <div class="mt-6">
+    <h3 class="text-lg font-semibold mb-2">Comments</h3>
+    <form method="POST" action="{{ route('question.comment') }}" class="mb-4">
+      @csrf
+      <input type="hidden" name="question_id" value="{{ $question->id }}">
+      <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Leave a comment..." required></textarea>
+      <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
+    </form>
+    <div class="space-y-4">
+      @forelse($comments as $comment)
+        <div class="p-3 bg-gray-100 rounded shadow">
+          <div class="text-sm text-gray-700 font-semibold mb-1">{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></div>
+          <div class="text-gray-900">{{ $comment->comment }}</div>
+        </div>
+      @empty
+        <div class="text-gray-500">No comments yet. Be the first to comment!</div>
+      @endforelse
+    </div>
+  </div>
 @else
   <form method="POST" action="/submit-answer" id="answerForm">
     @csrf
