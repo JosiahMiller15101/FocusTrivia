@@ -105,9 +105,7 @@
   </script>
 @endif
   </div>
-</x-layout>
-
-@section('scripts')
+  @section('scripts')
 <script>
   document.querySelectorAll('.reaction-btn').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -125,15 +123,13 @@
       })
       .then(res => res.json())
       .then(data => {
+        console.log('reaction response', data);  // <-- for debugging
         if (data.counts) {
-          // For each button in this comment, update its count
           document
             .querySelectorAll(`.reaction-btn[data-comment-id="${commentId}"]`)
             .forEach(b => {
-              const btnType = b.dataset.type;
-              const span = b.querySelector('.reaction-count');
-              // data.counts is an object like { like: 2, angry: 0, ... }
-              span.textContent = data.counts[btnType] || 0;
+              const count = data.counts[b.dataset.type] || 0;
+              b.querySelector('.reaction-count').textContent = count;
             });
         }
       });
@@ -141,3 +137,7 @@
   });
 </script>
 @endsection
+
+</x-layout>
+
+

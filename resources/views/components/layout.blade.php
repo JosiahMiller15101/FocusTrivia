@@ -61,5 +61,11 @@
   </main>
   @yield('scripts')
 </div>
+
+    {{-- if you used @section('scripts') --}}
+    @yield('scripts')
+
+    {{-- or, if you used @push('scripts') --}}
+    @stack('scripts')
 </body>
 </html>
