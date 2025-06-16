@@ -21,7 +21,16 @@
         @foreach($users as $index => $user)
             <tr class="border-b text-gray-800 text-sm">
                 <td class="py-2">{{ ($users->firstItem() ?? 0) + $index }}</td>
-                <td class="py-2">
+                <td class="py-2 flex items-center gap-2">
+                  @php
+                    $profileImage = $user->profile_image ?? null;
+                    $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
+                  @endphp
+                  @if($profileImage)
+                    <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                  @else
+                    <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
+                  @endif
                   <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
                     {{ $user->first_name }} {{ $user->last_name }}
                   </a>

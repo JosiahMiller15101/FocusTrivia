@@ -1,5 +1,13 @@
 <x-layout>
   <x-slot name="heading">
+    @php
+      $dashboardUser = isset($user) ? $user : Auth::user();
+      $profileImage = $dashboardUser->profile_image ?? null;
+      $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
+    @endphp
+    @if($profileImage)
+      <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile" class="inline w-10 h-10 rounded-full object-cover align-middle mr-2">
+    @endif
     {{ isset($user) ? $user->first_name : (isset($first_name) ? $first_name : 'Dashboard') }}'s Dashboard
   </x-slot>
 
@@ -45,9 +53,7 @@
           $profileImage = Auth::user()->profile_image;
           $isAbsolute = Str::startsWith($profileImage, ['http://', 'https://']);
         @endphp
-        <div class="text-xs text-gray-500 break-all mb-2">profile_image: {{ $profileImage }}</div>
-        <div class="text-xs text-gray-500 break-all mb-2">img src: {{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}</div>
-        <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover mb-4">
+        <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
       @else
         <span class="text-gray-500 mb-4">No profile image uploaded.</span>
       @endif
@@ -55,9 +61,9 @@
         @csrf
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700">Profile Image</label>
-          <input type="file" name="profile_image" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-lg">
+          <input type="file" name="profile_image" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-lg text-xs py-1 px-2">
         </div>
-        <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500 w-full">Upload</button>
+        <button type="submit" class="shadow px-2 py-1 bg-slate-600 text-xs text-white rounded hover:bg-slate-500 w-full">Upload</button>
       </form>
     </div>
     @endif
