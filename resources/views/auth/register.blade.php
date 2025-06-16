@@ -14,9 +14,9 @@
             <select name="department" id="department">
               <option value="Guest">Guest</option>
               <option value="Accounting">Accounting</option>
-              <option value="ChurchEngagement">Church Engagement</option>
-              <option value="DigitalContent">Digital Content</option>
-              <option value="DonorCommunications">Donor Communications</option>
+              <option value="Church Engagement">Church Engagement</option>
+              <option value="Digital Content">Digital Content</option>
+              <option value="Donor Communications">Donor Communications</option>
               <option value="Events">Events</option>
               <option value="Finance">Finance</option>
               <option value="HR">H.R.</option>
@@ -25,7 +25,7 @@
               <option value="Other">Media Operations</option>
               <option value="Other">Missions</option>
               <option value="QGI">QGI</option>
-              <option value="SummerProjects">Summer Projects</option>
+              <option value="Summer Projects">Summer Projects</option>
               <option value="Other">Other</option>
             </select>
         </x-form-field>

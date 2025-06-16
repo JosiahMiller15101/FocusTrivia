@@ -10,6 +10,7 @@ use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectDashboardController;
+use App\Http\Controllers\SelectDepartmentDashboardController;
 
 
 
@@ -57,6 +58,9 @@ Route::put('/profile', [ProfileController::class, 'update'])->middleware('auth')
 Route::get('/player/{user}', [SelectDashboardController::class, 'show'])
     ->middleware('auth')
     ->name('player.dashboard');
+
+// Department dashboard (public)
+Route::get('/department/{department}', [SelectDepartmentDashboardController::class, 'show'])->name('department.dashboard');
 
 //Explained
 Route::get('/explained', function () {

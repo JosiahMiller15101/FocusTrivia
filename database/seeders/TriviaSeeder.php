@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Http;
 use App\Models\Question;
+use Illuminate\Support\Facades\DB;
 
 class TriviaSeeder extends Seeder
 {
@@ -14,18 +15,28 @@ class TriviaSeeder extends Seeder
      */
     public function run(): void
     {
-        $response = Http::get('https://opentdb.com/api.php?amount=30&category=9&difficulty=easy&type=multiple');
+        DB::table('questions')->truncate(); // Clear existing entries
 
-        $data = $response->json();
+        // First request: 50 questions
+        $response1 = Http::get('https://the-trivia-api.com/v2/questions?limit=50&difficulties=easy,medium&type=multiple&region=US');
+        $data1 = $response1->json();
 
-        foreach ($data['results'] as $item) {
+        // Second request: 10 questions
+        $response2 = Http::get('https://the-trivia-api.com/v2/questions?limit=10&difficulties=easy,medium&type=multiple&region=US');
+        $data2 = $response2->json();
+
+        // Merge both arrays
+        $allQuestions = array_merge($data1, $data2);
+
+        // Insert all questions
+        foreach ($allQuestions as $item) {
             Question::create([
-                'category' => $item['category'],
-                'type' => $item['type'],
-                'difficulty' => $item['difficulty'],
-                'question' => html_entity_decode($item['question']),
-                'correct_answer' => html_entity_decode($item['correct_answer']),
-                'incorrect_answers' => json_encode(array_map('html_entity_decode', $item['incorrect_answers'])),
+                'category' => $item['category'] ?? 'General',
+                'type' => 'multiple',
+                'difficulty' => $item['difficulty'] ?? 'medium',
+                'question' => html_entity_decode($item['question']['text']),
+                'correct_answer' => html_entity_decode($item['correctAnswer']),
+                'incorrect_answers' => json_encode(array_map('html_entity_decode', $item['incorrectAnswers'])),
             ]);
         }
     }
