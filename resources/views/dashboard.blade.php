@@ -41,7 +41,11 @@
         </div>
       @endif
       @if(Auth::user()->profile_image)
-        <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover mb-4">
+        @php
+          $profileImage = Auth::user()->profile_image;
+          $isAbsolute = Str::startsWith($profileImage, ['http://', 'https://']);
+        @endphp
+        <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover mb-4">
       @else
         <span class="text-gray-500 mb-4">No profile image uploaded.</span>
       @endif

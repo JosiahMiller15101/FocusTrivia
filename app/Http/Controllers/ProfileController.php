@@ -30,7 +30,7 @@ class ProfileController extends Controller
 
         $user = auth()->user();
         if ($request->hasFile('profile_image')) {
-            $path = $request->file('profile_image')->store('profile_images', 'public');
+            $path = $request->file('profile_image')->store('profile_images', 's3');
             $user->profile_image = $path;
             $user->save();
             return back()->with('success', 'Profile image updated successfully.');
@@ -38,3 +38,6 @@ class ProfileController extends Controller
         return back()->withErrors(['profile_image' => 'No image was uploaded.']);
     }
 }
+
+//+7r0gaKsfWKxYU+r2n5pqPRD8BVbFSUgIRXjsCgX
+//key->AKIA2CGFJUHTSO3RWT6C
