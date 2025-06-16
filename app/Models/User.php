@@ -47,4 +47,13 @@ class User extends Authenticatable
 {
     return $this->hasMany(QuestionSubmission::class);
 }
+
+    public function getProfileImageAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        }
+        // Return a default image URL (public/images/p.png)
+        return asset('images/p.png');
+    }
 }

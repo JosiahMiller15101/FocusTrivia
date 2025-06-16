@@ -12,7 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectDashboardController;
 use App\Http\Controllers\SelectDepartmentDashboardController;
 use App\Http\Controllers\QuestionCommentController;
-
+use \App\Http\Controllers\ProfileController;
 
 
 //home
@@ -72,9 +72,4 @@ Route::get('/explained', function () {
 Route::post('/question/comment', [QuestionCommentController::class, 'store'])->middleware('auth')->name('question.comment');
 
 // Profile image upload
-Route::post('/profile/upload-image', [\App\Http\Controllers\ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
-
-
-Route::get('/debug-s3-region', function () {
-    return config('filesystems.disks.s3')['region'];
-});
+Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
