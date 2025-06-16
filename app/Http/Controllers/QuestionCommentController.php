@@ -18,6 +18,7 @@ class QuestionCommentController extends Controller
         QuestionComment::create([
             'user_id' => Auth::id(),
             'question_id' => $request->question_id,
+            'question_code' => $request->question_code ?? null,
             'comment' => $request->comment,
         ]);
 

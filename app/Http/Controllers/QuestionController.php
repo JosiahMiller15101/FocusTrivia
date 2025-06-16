@@ -14,7 +14,7 @@ class QuestionController extends Controller
 {
      public function show()
     {
-        $questions = Question::orderBy('id')->get();
+        $questions = Question::orderBy('code')->get();
 
         if ($questions->isEmpty()) {
             abort(404, 'No questions found.');
@@ -40,7 +40,7 @@ class QuestionController extends Controller
 
     public function showAuthenticated() {
         $user = Auth::user();
-        $questions = Question::orderBy('id')->get();
+        $questions = Question::orderBy('code')->get();
 
         if ($questions->isEmpty()) {
             abort(404, 'No questions found.');
@@ -54,7 +54,7 @@ class QuestionController extends Controller
         $question = $questions[$index];
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
-            ->where('question_id', $question->id)
+            ->where('question_code', $question->code)
             ->exists();
 
         $allAnswers = json_decode($question->incorrect_answers);

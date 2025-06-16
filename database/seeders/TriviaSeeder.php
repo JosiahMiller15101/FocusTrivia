@@ -30,6 +30,7 @@ class TriviaSeeder extends Seeder
 
         // Insert all questions
         foreach ($allQuestions as $item) {
+            $code = md5($item['question']['text'] . $item['category']); // or use Str::uuid() if you want random
             Question::create([
                 'category' => $item['category'] ?? 'General',
                 'type' => 'multiple',
@@ -37,6 +38,7 @@ class TriviaSeeder extends Seeder
                 'question' => html_entity_decode($item['question']['text']),
                 'correct_answer' => html_entity_decode($item['correctAnswer']),
                 'incorrect_answers' => json_encode(array_map('html_entity_decode', $item['incorrectAnswers'])),
+                'code' => $code,
             ]);
         }
     }
