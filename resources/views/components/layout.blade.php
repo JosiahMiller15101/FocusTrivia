@@ -59,6 +59,7 @@
       {{ $slot }}
     </div>
   </main>
+  @yield('scripts')
 </div>
 </body>
 </html>
