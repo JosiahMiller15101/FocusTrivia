@@ -35,18 +35,18 @@
       @php
         $reactionTypes = [
           'like' => '👍',
-          'cheer' => '👏🏻',
+          'crying' => '😢',
           'dislike' => '👎',
           'angry' => '😡',
-          'smile' => '🙂',
+          'laughing' => '😂',
         ];
       @endphp
       @forelse($comments as $comment)
         <div class="p-3 bg-gray-100 rounded shadow relative">
           <div class="text-sm text-gray-700 font-semibold mb-1">{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></div>
-          <div class="text-gray-900">{{ $comment->comment }}</div>
+          <div class="text-gray-900 mb-2">{{ $comment->comment }}</div>
           <!-- Reaction Buttons with Counts -->
-          <div class="flex justify-end items-end gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-lg shadow absolute right-2 bottom-2 z-10">
+          <div class="flex justify-end items-end gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-lg shadow mt-1">
             @foreach($reactionTypes as $type => $emoji)
               <button
                 class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-3 before:text-[.5rem] before:px-0.5 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-5 before:rounded hover:-translate-y-2 cursor-pointer hover:scale-110 bg-white dark:bg-[#191818] rounded-full p-1 px-2 text-base"
@@ -111,6 +111,7 @@ document.querySelectorAll('.reaction-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     const commentId = this.dataset.commentId;
     const type = this.dataset.type;
+    // Find the count span for this button only
     const countSpan = this.querySelector('.reaction-count');
     fetch("{{ route('question.comment.react') }}", {
       method: 'POST',
