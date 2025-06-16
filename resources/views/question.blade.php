@@ -40,22 +40,22 @@
           @php
             $reactionTypes = [
               'like' => '👍',
+              'dislike' => '👎', // replaced 'celebrate'
               'cheer' => '👏🏻',
-              'celebrate' => '🎉',
-              'appreciate' => '✨',
+              'angry' => '😡',   // replaced 'appreciate'
               'smile' => '🙂',
             ];
           @endphp
-          <div class="hover:scale-x-105 transition-all duration-300 *:transition-all *:duration-300 flex justify-start text-2xl items-center shadow-xl z-10 bg-[#e8e4df] dark:bg-[#191818] gap-2 p-2 rounded-full mt-2">
+          <div class="flex justify-start items-center gap-1 p-1 rounded-full mt-2 bg-[#e8e4df] dark:bg-[#191818] w-auto text-lg shadow">
             @foreach($reactionTypes as $type => $emoji)
               <button
-                class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-4 before:text-[.6rem] before:px-1 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-7 before:rounded-lg hover:-translate-y-5 cursor-pointer hover:scale-125 bg-white dark:bg-[#191818] rounded-full p-2 px-3"
+                class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-3 before:text-[.5rem] before:px-0.5 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-5 before:rounded hover:-translate-y-2 cursor-pointer hover:scale-110 bg-white dark:bg-[#191818] rounded-full p-1 px-2 text-base"
                 data-comment-id="{{ $comment->id }}"
                 data-type="{{ $type }}"
                 type="button"
               >
                 {{ $emoji }}
-                <span class="text-base ml-1 align-middle reaction-count">{{ $comment->reactions->where('type', $type)->count() }}</span>
+                <span class="text-xs ml-0.5 align-middle reaction-count" style="color: white; text-shadow: 0 0 2px #000;">{{ $comment->reactions->where('type', $type)->count() }}</span>
               </button>
             @endforeach
           </div>
