@@ -28,7 +28,6 @@
     <form method="POST" action="{{ route('question.comment') }}" class="mb-4">
       @csrf
       <input type="hidden" name="question_id" value="{{ $question->id }}">
-      <input type="hidden" name="question_code" value="{{ $question->code }}">
       <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Ignore the scary warning, I don't know how to get rid of that but it's nothing sketchy" required></textarea>
       <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
     </form>
@@ -47,7 +46,6 @@
   <form method="POST" action="/submit-answer" id="answerForm">
     @csrf
     <input type="hidden" name="question_id" value="{{ $question->id }}">
-    <input type="hidden" name="question_code" value="{{ $question->code }}">
 
     @foreach($answers as $answer)
       <label class="flex items-center space-x-2">

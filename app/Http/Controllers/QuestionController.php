@@ -14,17 +14,17 @@ class QuestionController extends Controller
 {
      public function show()
     {
-        $questions = Question::orderBy('code')->get();
+        $questions = Question::orderBy('id')->get();
 
         if ($questions->isEmpty()) {
             abort(404, 'No questions found.');
         }
 
-        // New logic: reload question at midnight and at 12pm
-        $now = Carbon::now();
-        $day = $now->day;
-        $half = $now->hour < 12 ? 0 : 1;
-        $index = (($day - 1) * 2 + $half) % $questions->count();
+        // Use a fixed start date for the question cycle
+        $start = Carbon::create(2024, 1, 1, 0, 0, 0, 'UTC'); // Set this to your actual trivia launch date
+        $now = Carbon::now('UTC');
+        $periods = floor($start->diffInHours($now) / 12);
+        $index = $periods % $questions->count();
         $question = $questions[$index];
 
         $allAnswers = json_decode($question->incorrect_answers);
@@ -40,21 +40,21 @@ class QuestionController extends Controller
 
     public function showAuthenticated() {
         $user = Auth::user();
-        $questions = Question::orderBy('code')->get();
+        $questions = Question::orderBy('id')->get();
 
         if ($questions->isEmpty()) {
             abort(404, 'No questions found.');
         }
 
-        // New logic: reload question at midnight and at 12pm
-        $now = Carbon::now();
-        $day = $now->day;
-        $half = $now->hour < 12 ? 0 : 1;
-        $index = (($day - 1) * 2 + $half) % $questions->count();
+        // Use a fixed start date for the question cycle
+        $start = Carbon::create(2024, 1, 1, 0, 0, 0, 'UTC'); // Set this to your actual trivia launch date
+        $now = Carbon::now('UTC');
+        $periods = floor($start->diffInHours($now) / 12);
+        $index = $periods % $questions->count();
         $question = $questions[$index];
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
-            ->where('question_code', $question->code)
+            ->where('question_id', $question->id)
             ->exists();
 
         $allAnswers = json_decode($question->incorrect_answers);

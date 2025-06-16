@@ -15,7 +15,7 @@ class TriviaSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('questions')->truncate(); // Clear existing entries
+        DB::table('questions'); 
 
         // First request: 50 questions
         $response1 = Http::get('https://the-trivia-api.com/v2/questions?limit=50&difficulties=easy,medium&type=multiple&region=US');
@@ -30,7 +30,6 @@ class TriviaSeeder extends Seeder
 
         // Insert all questions
         foreach ($allQuestions as $item) {
-            $code = md5($item['question']['text'] . $item['category']); // or use Str::uuid() if you want random
             Question::create([
                 'category' => $item['category'] ?? 'General',
                 'type' => 'multiple',
@@ -38,7 +37,6 @@ class TriviaSeeder extends Seeder
                 'question' => html_entity_decode($item['question']['text']),
                 'correct_answer' => html_entity_decode($item['correctAnswer']),
                 'incorrect_answers' => json_encode(array_map('html_entity_decode', $item['incorrectAnswers'])),
-                'code' => $code,
             ]);
         }
     }

@@ -19,9 +19,9 @@ class QuestionSubmissionController extends Controller
             return back()->with('error', 'Question not found.');
         }
 
-        // Check if the user already submitted an answer for this question (by code)
+        // Check if the user already submitted an answer for this question
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
-            ->where('question_code', $question->code)
+            ->where('question_id', $question->id)
             ->exists();
 
         if ($alreadySubmitted) {
@@ -33,7 +33,6 @@ class QuestionSubmissionController extends Controller
         QuestionSubmission::create([
             'user_id' => $user->id,
             'question_id' => $question->id,
-            'question_code' => $question->code,
             'submitted_at' => now(),
             'is_correct' => $isCorrect,
         ]);
