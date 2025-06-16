@@ -70,3 +70,6 @@ Route::get('/explained', function () {
 
 // Post question comments
 Route::post('/question/comment', [QuestionCommentController::class, 'store'])->middleware('auth')->name('question.comment');
+
+// Profile image upload
+Route::post('/profile/upload-image', [\App\Http\Controllers\ProfileController::class, 'uploadImage'])->name('profile.uploadImage');

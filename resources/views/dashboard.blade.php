@@ -35,11 +35,9 @@
       @if(session('success'))
         <div class="mb-2 text-green-600 text-center">{{ session('success') }}</div>
       @endif
-      @if($errors->any())
+      @if($errors->has('profile_image'))
         <div class="mb-2 text-red-600 text-center">
-          @foreach($errors->all() as $error)
-            <div>{{ $error }}</div>
-          @endforeach
+          {{ $errors->first('profile_image') }}
         </div>
       @endif
       @if(Auth::user()->profile_image)
@@ -47,9 +45,8 @@
       @else
         <span class="text-gray-500 mb-4">No profile image uploaded.</span>
       @endif
-      <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="w-full">
+      <form method="POST" action="{{ route('profile.uploadImage') }}" enctype="multipart/form-data" class="w-full">
         @csrf
-        @method('PUT')
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700">Profile Image</label>
           <input type="file" name="profile_image" accept="image/*" class="mt-1 block w-full border-gray-300 rounded-md shadow-lg">
