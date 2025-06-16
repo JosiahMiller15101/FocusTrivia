@@ -26,7 +26,11 @@
                     {{ $user->first_name }} {{ $user->last_name }}
                   </a>
                 </td>
-                <td class="py-2">{{ $user->department }}</td>
+                <td class="py-2">
+                  <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold">
+                    {{ $user->department }}
+                  </a>
+                </td>
                 <td class="py-2">{{ $user->score }}</td>
                 <td class="py-2">{{ $user->accuracy }}%</td>
             </tr>
