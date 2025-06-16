@@ -26,6 +26,12 @@ class SelectDepartmentDashboardController extends Controller
             return ($correct * 10) - ($wrong * 10);
         });
         $numPlayers = $users->count();
+        $totalQuestionsAnswered = $users->sum(function ($u) {
+            return $u->submissions->count();
+        });
+        $totalCorrectAnswers = $users->sum(function ($u) {
+            return $u->submissions->where('is_correct', true)->count();
+        });
         $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
         $averageAccuracy = $users->avg(function ($u) {
             $total = $u->submissions->count();
@@ -57,6 +63,9 @@ class SelectDepartmentDashboardController extends Controller
             'totalScore' => $totalScore,
             'averageAccuracy' => $averageAccuracy,
             'players' => $players,
+            'numPlayers' => $numPlayers,
+            'totalQuestionsAnswered' => $totalQuestionsAnswered,
+            'totalCorrectAnswers' => $totalCorrectAnswers,
         ]);
     }
 }

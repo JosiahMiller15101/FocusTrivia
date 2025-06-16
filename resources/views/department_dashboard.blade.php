@@ -5,8 +5,11 @@
 
   <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
     <h2 class="text-xl font-semibold mb-2">Department Stats</h2>
+    <p class="mb-2">Number of Players: <strong>{{ $numPlayers }}</strong></p>
     <p class="mb-2">Weighted Score: <strong>{{ number_format($scorePerPlayer, 1) }}</strong></p>
     <p class="mb-2">Total Score: <strong>{{ $totalScore }}</strong></p>
+    <p class="mb-2">Total Questions Answered: <strong>{{ $totalQuestionsAnswered }}</strong></p>
+    <p class="mb-2">Total Correct Answers: <strong>{{ $totalCorrectAnswers }}</strong></p>
     <p class="mb-2">Average Accuracy: <strong>{{ number_format($averageAccuracy, 1) }}%</strong></p>
   </div>
 
