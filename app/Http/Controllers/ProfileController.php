@@ -31,7 +31,8 @@ class ProfileController extends Controller
         $user = auth()->user();
         if ($request->hasFile('profile_image')) {
             $path = $request->file('profile_image')->store('profile_images', 's3');
-            $user->profile_image = $path;
+            $url = \Storage::disk('s3')->url($path);
+            $user->profile_image = $url; // Save the full URL for easy display
             $user->save();
             return back()->with('success', 'Profile image updated successfully.');
         }

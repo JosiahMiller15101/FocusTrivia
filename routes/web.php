@@ -73,3 +73,8 @@ Route::post('/question/comment', [QuestionCommentController::class, 'store'])->m
 
 // Profile image upload
 Route::post('/profile/upload-image', [\App\Http\Controllers\ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
+
+
+Route::get('/debug-s3-region', function () {
+    return config('filesystems.disks.s3')['region'];
+});
