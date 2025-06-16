@@ -32,6 +32,16 @@
     </div>
     @if (!isset($user) || (isset($user) && $user->id === Auth::id()))
     <div class="flex flex-col items-center min-w-[220px]">
+      @if(session('success'))
+        <div class="mb-2 text-green-600 text-center">{{ session('success') }}</div>
+      @endif
+      @if($errors->any())
+        <div class="mb-2 text-red-600 text-center">
+          @foreach($errors->all() as $error)
+            <div>{{ $error }}</div>
+          @endforeach
+        </div>
+      @endif
       @if(Auth::user()->profile_image)
         <img src="{{ asset('storage/' . Auth::user()->profile_image) }}" alt="Profile Image" class="w-24 h-24 rounded-full object-cover mb-4">
       @else
