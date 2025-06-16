@@ -12,7 +12,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectDashboardController;
 use App\Http\Controllers\SelectDepartmentDashboardController;
 use App\Http\Controllers\QuestionCommentController;
-use \App\Http\Controllers\ProfileController;
 
 
 //home

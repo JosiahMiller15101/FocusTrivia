@@ -66,6 +66,14 @@
         <button type="submit" class="shadow px-2 py-1 bg-slate-600 text-xs text-white rounded hover:bg-slate-500 w-full">Upload</button>
       </form>
     </div>
+    @elseif(isset($user))
+    <div class="flex flex-col items-center min-w-[220px]">
+      @php
+        $profileImage = $user->profile_image;
+        $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
+      @endphp
+      <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
+    </div>
     @endif
   </div>
 
