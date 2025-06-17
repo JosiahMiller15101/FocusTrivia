@@ -76,4 +76,6 @@ Route::post('/question/comment/react', [QuestionCommentController::class, 'react
 // Profile image upload
 Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
 
-// 
+ Route::get('/env-check', function () {
+    dd(app()->environment());
+});

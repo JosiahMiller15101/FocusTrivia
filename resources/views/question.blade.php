@@ -42,10 +42,10 @@
         ];
       @endphp
       @forelse($comments as $comment)
-        <div class="p-3 bg-gray-100 rounded shadow relative">
+        <div class="p-3 pb-10 bg-gray-100 rounded shadow relative">
           <div class="text-sm text-gray-700 font-semibold mb-1">{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></div>
           <div class="text-gray-900 mb-2">{{ $comment->comment }}</div>
-          <div class="absolute bottom-2 right-2 flex gap-2">
+          <div class="absolute bottom-3 right-3 flex gap-2">
           <!-- Reaction Buttons with Counts -->
           <div class="flex justify-end items-end gap-0.5 p-0.5 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
             @foreach($reactionTypes as $type => $emoji)
