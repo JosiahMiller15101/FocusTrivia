@@ -138,7 +138,7 @@
                 </div>
             </div>
         </template>
-    </di>
+    </div>
     <script>
     function questionComponent({ correct, timeLimit, answers }) {
         return {
