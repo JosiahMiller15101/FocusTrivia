@@ -26,10 +26,7 @@ class QuestionController extends Controller
         $index   = $periods % $count;
         $question = Question::orderBy('id')->skip($index)->first();
 
-        $allAnswers = json_decode($question->incorrect_answers, true);
-        if (!is_array($allAnswers)) {
-            $allAnswers = [];
-        }
+        $allAnswers = json_decode($question->incorrect_answers);
         $allAnswers[] = $question->correct_answer;
         shuffle($allAnswers);
 
@@ -58,10 +55,7 @@ class QuestionController extends Controller
             ->where('question_id', $question->id)
             ->exists();
 
-        $allAnswers = json_decode($question->incorrect_answers, true);
-        if (!is_array($allAnswers)) {
-            $allAnswers = [];
-        }
+        $allAnswers = json_decode($question->incorrect_answers);
         $allAnswers[] = $question->correct_answer;
         shuffle($allAnswers);
 
@@ -80,4 +74,27 @@ class QuestionController extends Controller
             'comments' => $comments,
         ]);
     }
+
+    public function submit(Request $request)
+{
+    $user = Auth::user();
+    $question = Question::findOrFail($request->input('question_id'));
+    $selected = $request->input('answer');
+    $isCorrect = $selected === $question->correct_answer;
+
+    // Save the submission...
+    QuestionSubmission::create([
+        'user_id' => $user->id,
+        'question_id' => $question->id,
+        'selected_answer' => $selected,
+        'is_correct' => $isCorrect,
+    ]);
+
+    return redirect()->back()->with([
+        'submitted' => true,
+        'is_correct' => $isCorrect,
+        'correct_answer' => $question->correct_answer,
+        'selected_answer' => $selected,
+    ]);
+}
 }

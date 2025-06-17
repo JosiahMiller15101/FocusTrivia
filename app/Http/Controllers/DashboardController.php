@@ -1,73 +1,141 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\QuestionSubmission;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-      public function index()
-{
-    $user = Auth::user();
+    public function index()
+    {
+        $user = Auth::user();
 
-    $totalAnswered = QuestionSubmission::where('user_id', $user->id)->count();
-    $correctAnswers = QuestionSubmission::where('user_id', $user->id)->where('is_correct', true)->count();
-    $wrongAnswers = $totalAnswered - $correctAnswers;
-    $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
-    $accuracy = $totalAnswered > 0 ? ($correctAnswers / $totalAnswered) * 100 : 0;
+        $stats = $this->getUserStats($user->id);
+        $allUsers = $this->getRankedUsers();
+        $playerRank = $this->getPlayerRank($allUsers, $user->id);
+        $departments = $this->getRankedDepartments($allUsers);
+        $departmentRank = $this->getDepartmentRank($departments, $user->department);
+        $history = $this->getRecentSubmissions($user->id);
+        $streak = $this->calculateStreak($user->id);
 
-    // 1. Get all users with their score, accuracy, and total answered (excluding guests)
-    $allUsers = User::with('submissions')->get()->filter(function ($u) {
-        return strtolower(trim($u->department)) !== 'guest';
-    })->map(function ($u) {
-        $correct = $u->submissions->where('is_correct', true)->count();
-        $total = $u->submissions->count();
-        $wrong = $total - $correct;
-        $u->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
-        $u->total_answered = $total;
-        $u->score = ($correct * 10) - ($wrong * 10);
-        return $u;
-    })->sortByDesc(function ($u) {
-        // Sort by score DESC, then by total_answered DESC
-        return [$u->score, $u->total_answered];
-    })->values();
+        return view('dashboard', [
+            'first_name' => $user->first_name,
+            'totalAnswered' => $stats['totalAnswered'],
+            'correctAnswers' => $stats['correctAnswers'],
+            'score' => $stats['score'],
+            'playerRank' => $playerRank,
+            'departmentRank' => $departmentRank,
+            'history' => $history,
+            'streak' => $streak,
+        ]);
+    }
 
-    // 2. Determine player's rank (1-based)
-    $playerRank = $allUsers->search(fn($u) => $u->id === $user->id);
-    $playerRank = $playerRank !== false ? $playerRank + 1 : 'N/A';
+    private function getUserStats($userId)
+    {
+        $totalAnswered = QuestionSubmission::where('user_id', $userId)->count();
+        $correctAnswers = QuestionSubmission::where('user_id', $userId)->where('is_correct', true)->count();
+        $wrongAnswers = $totalAnswered - $correctAnswers;
+        $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
 
-    // 3. Get department stats using new score_per_player formula (excluding guests)
-    $departments = $allUsers->groupBy('department')
-        ->filter(function ($users, $dept) {
-            return strtolower(trim($dept)) !== 'guest';
-        })
-        ->map(function ($users, $dept) {
-            $totalScore = $users->sum('score');
-            $numPlayers = $users->count();
-            $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
-            $averageAccuracy = $users->avg('accuracy');
-            return [
-                'department' => $dept,
-                'score_per_player' => $scorePerPlayer,
-                'total_score' => $totalScore,
-                'average_accuracy' => $averageAccuracy,
-            ];
-        })
-        ->sortByDesc('score_per_player')
-        ->values();
+        return [
+            'totalAnswered' => $totalAnswered,
+            'correctAnswers' => $correctAnswers,
+            'score' => $score,
+        ];
+    }
 
-    $departmentRank = $departments->search(fn($d) => $d['department'] === $user->department);
-    $departmentRank = $departmentRank !== false ? $departmentRank + 1 : 'N/A';
+    private function getRankedUsers()
+    {
+        return User::with('submissions')
+            ->get()
+            ->filter(fn($u) => strtolower(trim($u->department)) !== 'guest')
+            ->map(function ($u) {
+                $correct = $u->submissions->where('is_correct', true)->count();
+                $total = $u->submissions->count();
+                $wrong = $total - $correct;
 
-    return view('dashboard', [
-        'first_name' => $user->first_name,
-        'totalAnswered' => $totalAnswered,
-        'correctAnswers' => $correctAnswers,
-        'score' => $score,
-        'playerRank' => $playerRank,
-        'departmentRank' => $departmentRank,
-    ]);
-}
+                $u->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
+                $u->total_answered = $total;
+                $u->score = ($correct * 10) - ($wrong * 10);
+
+                return $u;
+            })
+            ->sortByDesc(fn($u) => [$u->score, $u->total_answered])
+            ->values();
+    }
+
+    private function getPlayerRank($allUsers, $userId)
+    {
+        $rank = $allUsers->search(fn($u) => $u->id === $userId);
+        return $rank !== false ? $rank + 1 : 'N/A';
+    }
+
+    private function getRankedDepartments($users)
+    {
+        return $users->groupBy('department')
+            ->filter(fn($users, $dept) => strtolower(trim($dept)) !== 'guest')
+            ->map(function ($users, $dept) {
+                $totalScore = $users->sum('score');
+                $numPlayers = $users->count();
+                $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
+                $averageAccuracy = $users->avg('accuracy');
+
+                return [
+                    'department' => $dept,
+                    'score_per_player' => $scorePerPlayer,
+                    'total_score' => $totalScore,
+                    'average_accuracy' => $averageAccuracy,
+                ];
+            })
+            ->sortByDesc('score_per_player')
+            ->values();
+    }
+
+    private function getDepartmentRank($departments, $userDept)
+    {
+        $rank = $departments->search(fn($d) => $d['department'] === $userDept);
+        return $rank !== false ? $rank + 1 : 'N/A';
+    }
+
+    private function getRecentSubmissions($userId)
+    {
+        return QuestionSubmission::with('question')
+            ->where('user_id', $userId)
+            ->orderByDesc('submitted_at')
+            ->take(10)
+            ->get();
+    }
+
+    private function calculateStreak($userId)
+    {
+        $dates = QuestionSubmission::where('user_id', $userId)
+            ->orderByDesc('submitted_at')
+            ->pluck('submitted_at')
+            ->map(fn($dt) => Carbon::parse($dt)->toDateString())
+            ->unique()
+            ->values();
+
+        $streak = 0;
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+        $expected = $today;
+
+        foreach ($dates as $date) {
+            if ($date === $expected) {
+                $streak++;
+                $expected = Carbon::parse($expected)->subDay()->toDateString();
+            } elseif ($streak === 0 && $date === $yesterday) {
+                $streak++;
+                $expected = Carbon::parse($expected)->subDay()->toDateString();
+            } else {
+                break;
+            }
+        }
+
+        return $streak;
+    }
 }

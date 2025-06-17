@@ -4,7 +4,7 @@
   </x-slot>
 
   <!-- Player Leaderboard -->
-  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
+  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-gray-400">
     <h2 class="text-xl font-semibold mb-4">Top Players by Score</h2>
       <a href="/explained" title="Explained" class="text-xs underline hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
     <table class="w-full text-left border-collapse">
@@ -65,7 +65,7 @@
   </div>
 
   <!-- Department Leaderboard -->
-  <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-black">
+  <div class="p-6 bg-white rounded shadow mt-10 ring-2 ring-gray-400">
   <h2 class="text-xl font-semibold mb-4">Top 10 Departments</h2>
   <a href="/explained" title="Explained" class="text-xs underline hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
   <table class="w-full text-left border-collapse">
@@ -100,6 +100,9 @@
             <td class="py-2 px-4">
               <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold">
                 {{ $dept['department'] }}
+                @if(isset($dept['num_players']))
+                  ({{ $dept['num_players'] }})
+                @endif
               </a>
             </td>
             <td class="py-2 px-4">{{ isset($dept['score_per_player']) ? number_format($dept['score_per_player'], 1) : 'N/A' }}</td>
@@ -112,7 +115,7 @@
 </div>
 
 <!-- Guest Leaderboard -->
-  <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-black">
+  <div class="p-6 bg-white rounded shadow-lg mt-10 ring-2 ring-gray-400">
     <h2 class="text-xl font-semibold mb-4">Top Guest Players</h2>
       <a href="/explained" title="Explained" class="text-xs underline hover:text-gray-600 mb-2 inline-block font-semibold">Ranking Explained</a>
     <table class="w-full text-left border-collapse">

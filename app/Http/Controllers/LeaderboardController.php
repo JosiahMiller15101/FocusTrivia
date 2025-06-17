@@ -60,6 +60,7 @@ public function index()
                     'total_score' => $totalScore,
                     'average_accuracy' => $averageAccuracy,
                     'score_per_player' => $scorePerPlayer,
+                    'num_players' => $numPlayers,
                 ];
             })
             ->sortByDesc('score_per_player')

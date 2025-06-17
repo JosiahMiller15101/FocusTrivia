@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,13 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class QuestionSubmissionController extends Controller
 {
     public function store(Request $request)
-        {
+    {
+        $request->validate([
+            'question_id' => 'required|exists:questions,id',
+            'answer' => 'required|string|max:255',
+        ]);
+
         $user = Auth::user();
         $question = Question::find($request->question_id);
-
-        if (!$question) {
-            return back()->with('error', 'Question not found.');
-        }
 
         // Check if the user already submitted an answer for this question
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
@@ -28,19 +28,20 @@ class QuestionSubmissionController extends Controller
             return back()->with('error', 'You have already answered this question.');
         }
 
-        $isCorrect = $request->answer === $question->correct_answer;
+        $isCorrect = trim(strtolower($request->answer)) === trim(strtolower($question->correct_answer));
 
         QuestionSubmission::create([
             'user_id' => $user->id,
             'question_id' => $question->id,
             'submitted_at' => now(),
             'is_correct' => $isCorrect,
+            'answer' => $request->answer,
         ]);
 
         if ($isCorrect) {
             return back()->with('success', 'Correct! Well done. See you again in a few hours.');
         } else {
             return back()->with('error', "Not quite, it's alright though, we'll get 'em next time. CORRECT ANSWER: {$question->correct_answer}");
-    }    
+        }    
     }
 }
