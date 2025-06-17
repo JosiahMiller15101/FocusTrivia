@@ -78,7 +78,7 @@
     <div 
        x-data="questionComponent({ correct: @json($question->correct_answer), timeLimit: 10, answers: @json($answers) })"
      x-init="startTimer()"
-     class="relative">
+     class="relative"></div>
 
 
         <div class="flex justify-between items-center mb-2">
