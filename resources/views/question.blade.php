@@ -114,34 +114,31 @@
   </div>
   @section('scripts')
 <script>
-  document.querySelectorAll('.reaction-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const commentId = this.dataset.commentId;
-      const type = this.dataset.type;
-
-      fetch("{{ route('question.comment.react') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': '{{ csrf_token() }}',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ comment_id: commentId, type: type })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log('reaction response', data);  // <-- for debugging
-        if (data.counts) {
-          document
-            .querySelectorAll(`.reaction-btn[data-comment-id="${commentId}"]`)
-            .forEach(b => {
-              const count = data.counts[b.dataset.type] || 0;
-              b.querySelector('.reaction-count').textContent = count;
-            });
-        }
-      });
+document.querySelectorAll('.reaction-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const commentId = this.dataset.commentId;
+    const type = this.dataset.type;
+    fetch("{{ route('question.comment.react') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ comment_id: commentId, type: type })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.counts) {
+        // Update all counts for this comment
+        document.querySelectorAll('.reaction-btn[data-comment-id="' + commentId + '"] .reaction-count').forEach(function(span) {
+          const reactionType = span.parentElement.getAttribute('data-type');
+          span.textContent = data.counts[reactionType] || 0;
+        });
+      }
     });
   });
+});
 </script>
 @endsection
 
