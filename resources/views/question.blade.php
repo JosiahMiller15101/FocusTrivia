@@ -77,7 +77,7 @@
     @else
         <div class="mt-4">
             <h3 class="text-lg font-medium mb-4">{{ $question->question }}</h3>
-            <form method="POST" action="{{ route('submit-answer') }}" class="space-y-3">
+            <form method="POST" action="/question/submit" class="space-y-3">
                 @csrf
                 <input type="hidden" name="question_id" value="{{ $question->id }}">
                 @foreach($answers as $answer)
