@@ -110,7 +110,7 @@ class DashboardController extends Controller
             ->get();
     }
 
-    private function calculateStreak($userId)
+    public function calculateStreak($userId)
     {
         $dates = QuestionSubmission::where('user_id', $userId)
             ->orderByDesc('submitted_at')
@@ -128,10 +128,12 @@ class DashboardController extends Controller
             if ($date === $expected) {
                 $streak++;
                 $expected = Carbon::parse($expected)->subDay()->toDateString();
-            } elseif ($streak === 0 && $date === $yesterday) {
-                $streak++;
-                $expected = Carbon::parse($expected)->subDay()->toDateString();
             } else {
+                if ($streak === 0 && $date === $yesterday) {
+                    $streak++;
+                    $expected = Carbon::parse($expected)->subDay()->toDateString();
+                    continue;
+                }
                 break;
             }
         }
