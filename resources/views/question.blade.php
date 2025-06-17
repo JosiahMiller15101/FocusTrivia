@@ -42,7 +42,7 @@
         ];
       @endphp
       @forelse($comments as $comment)
-        <div class="p-3 bg-gray-100 rounded shadow relative">
+        <div class="p-3 pb-12 bg-gray-100 rounded shadow relative">
           <div class="text-sm text-gray-700 font-semibold mb-1 flex items-center justify-between">
             <span>{{ $comment->user->first_name }} {{ $comment->user->last_name }} <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span></span>
             @if(Auth::id() === $comment->user_id)
@@ -55,7 +55,8 @@
           </div>
           <div class="text-gray-900 mb-2">{{ $comment->comment }}</div>
           <!-- Reaction Buttons with Counts -->
-          <div class="flex justify-end items-end gap-0.5 p-0.5 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
+          <div class="absolute bottom-2 right-2">
+          <div class="flex items-center gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
             @foreach($reactionTypes as $type => $emoji)
               <button
                 class="reaction-btn before:hidden hover:before:flex before:justify-center before:items-center before:h-2.5 before:text-[.45rem] before:px-0.5 before:content-['{{ ucfirst($type) }}'] before:bg-black dark:before:bg-white dark:before:text-black before:text-white before:bg-opacity-50 before:absolute before:-top-4 before:rounded hover:-translate-y-1 cursor-pointer hover:scale-105 bg-white dark:bg-[#191818] rounded-full p-0.5 px-1 text-sm"
@@ -67,6 +68,7 @@
                 <span class="text-[10px] ml-0.5 align-middle reaction-count" style="color: white; text-shadow: 0 0 2px #000;">{{ $comment->reactions->where('type', $type)->count() }}</span>
               </button>
             @endforeach
+          </div>
           </div>
         </div>
       @empty
