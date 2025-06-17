@@ -20,7 +20,20 @@
       <tbody>
         @foreach($users as $index => $user)
             <tr class="border-b text-gray-800 text-sm">
-                <td class="py-2">{{ ($users->firstItem() ?? 0) + $index }}</td>
+                <td class="py-2">
+                  @php
+                    $rank = ($users->firstItem() ?? 0) + $index;
+                  @endphp
+                  @if($rank === 1)
+                    🥇
+                  @elseif($rank === 2)
+                    🥈
+                  @elseif($rank === 3)
+                    🥉
+                  @else
+                    {{ $rank }}
+                  @endif
+                </td>
                 <td class="py-2 flex items-center gap-2">
                   @php
                     $profileImage = $user->profile_image ?? null;
@@ -73,7 +86,17 @@
       @endphp
       @foreach($nonGuestDepartments as $index => $dept)
         <tr class="border-b text-gray-800 text-sm">
-            <td class="py-2">{{ $loop->iteration }}</td>
+            <td class="py-2">
+              @if($loop->iteration === 1)
+                🥇
+              @elseif($loop->iteration === 2)
+                🥈
+              @elseif($loop->iteration === 3)
+                🥉
+              @else
+                {{ $loop->iteration }}
+              @endif
+            </td>
             <td class="py-2 px-4">
               <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold">
                 {{ $dept['department'] }}
@@ -118,7 +141,17 @@
         @endphp
         @foreach($allUsers as $index => $user)
           <tr class="border-b text-gray-800 text-sm">
-            <td class="py-2">{{ $index + 1 }}</td>
+            <td class="py-2">
+              @if($index + 1 === 1)
+                🥇
+              @elseif($index + 1 === 2)
+                🥈
+              @elseif($index + 1 === 3)
+                🥉
+              @else
+                {{ $index + 1 }}
+              @endif
+            </td>
             <td class="py-2">
               <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
                 {{ $user->first_name }} {{ $user->last_name }}

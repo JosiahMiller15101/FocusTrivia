@@ -77,41 +77,104 @@
     </div>
   </div>
 @else
-  <form method="POST" action="/submit-answer" id="answerForm">
-    @csrf
-    <input type="hidden" name="question_id" value="{{ $question->id }}">
-
-    @foreach($answers as $answer)
-      <label class="flex items-center space-x-2">
-        <input type="radio" name="answer" value="{{ $answer }}" required class="accent-slate-600 focus:ring-slate-500 focus:outline-none">
-        <span>{{ $answer }}</span>
-      </label>
-    @endforeach
-
-    <div class="mt-4 flex items-center w-full">
-      <div class="flex-1 flex justify-center">
-        <span class="text-sm text-red-600 font-semibold text-center">Please press the submit button only once, even if the page takes a second to load.</span>
-      </div>
-      <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500 ml-4" id="submitBtn">
-        Submit
-      </button>
+<div 
+    x-data="questionComponent({ 
+        correct: @json($question->correct_answer), 
+        timeLimit: 30 
+    })" 
+    x-init="startTimer()" 
+    class="relative"
+>
+    <div class="flex justify-between items-center mb-2">
+        <div>
+            <h3 class="text-lg font-medium">{{ $question->question }}</h3>
+        </div>
+        <div class="flex items-center gap-2 text-amber-600">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="2"/><path d="M12 6v6l4 2" stroke-width="2"/></svg>
+            <span class="font-medium" x-text="timeLeft + 's'"></span>
+        </div>
     </div>
-  </form>
-  <script>
-        let formSubmitted = false;
-    document.getElementById('answerForm')?.addEventListener('submit', function(e) {
-      if (formSubmitted) {
-        e.preventDefault(); // block any additional submits
-        return;
-      }
-      formSubmitted = true;
-      const btn = document.getElementById('submitBtn');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerText = 'Submitting...';
-      }
-    });
-  </script>
+    <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+        <div class="bg-amber-500 h-2 rounded-full" :style="`width: ${(timeLeft/timeLimit)*100}%`"></div>
+    </div>
+    <form @submit.prevent="submitAnswer" class="space-y-3">
+        <template x-for="(answer, idx) in answers" :key="idx">
+            <div 
+                class="flex items-center space-x-2 rounded-lg border p-3 transition-colors"
+                :class="{
+                    'border-green-500 bg-green-50': isAnswered && answer === correct,
+                    'border-red-500 bg-red-50': isAnswered && answer === selected && answer !== correct,
+                    'border-blue-500 bg-blue-50': !isAnswered && selected === answer
+                }"
+            >
+                <input type="radio" :id="'option-'+idx" :value="answer" x-model="selected" :disabled="isAnswered" class="sr-only" />
+                <label :for="'option-'+idx" class="flex flex-1 items-center justify-between cursor-pointer">
+                    <span x-text="answer"></span>
+                    <template x-if="isAnswered && answer === correct">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2"/></svg>
+                    </template>
+                    <template x-if="isAnswered && answer === selected && answer !== correct">
+                        <svg class="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+                    </template>
+                </label>
+            </div>
+        </template>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded mt-4" :disabled="!selected || isAnswered">Submit Answer</button>
+    </form>
+    <template x-if="isAnswered">
+        <div class="mt-4 w-full text-center space-y-3">
+            <div x-show="result === 'correct'" class="bg-green-50 p-4 rounded-lg">
+                <h3 class="font-bold text-green-700 flex items-center justify-center gap-2">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2"/></svg>
+                    Correct!
+                </h3>
+                <p class="text-green-600">You earned <span x-text="points"></span> points</p>
+            </div>
+            <div x-show="result === 'incorrect'" class="bg-red-50 p-4 rounded-lg">
+                <h3 class="font-bold text-red-700 flex items-center justify-center gap-2">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg>
+                    Incorrect
+                </h3>
+                <p class="text-red-600">Better luck next time!</p>
+            </div>
+        </div>
+    </template>
+</div>
+<script>
+function questionComponent({ correct, timeLimit }) {
+    return {
+        answers: @json($answers),
+        correct: correct,
+        selected: '',
+        isAnswered: false,
+        result: null,
+        points: 0,
+        timeLimit: timeLimit,
+        timeLeft: timeLimit,
+        timer: null,
+        startTimer() {
+            this.timer = setInterval(() => {
+                if (!this.isAnswered && this.timeLeft > 0) {
+                    this.timeLeft--;
+                }
+                if (this.timeLeft === 0 && !this.isAnswered) {
+                    this.submitAnswer();
+                }
+            }, 1000);
+        },
+        submitAnswer() {
+            this.isAnswered = true;
+            clearInterval(this.timer);
+            if (this.selected === this.correct) {
+                this.result = 'correct';
+                this.points = Math.max(10, 10 + this.timeLeft);
+            } else {
+                this.result = 'incorrect';
+            }
+        }
+    }
+}
+</script>
 @endif
   </div>
   @section('scripts')
