@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\DashboardController;
 
 class SelectDashboardController extends Controller
 {
@@ -62,7 +63,7 @@ class SelectDashboardController extends Controller
         $departmentRank = $departmentRank !== false ? $departmentRank + 1 : 'N/A';
 
         $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->take(10)->get();
-        $streak = app(\App\Http\Controllers\DashboardController::class)->calculateStreak($user->id);
+        $streak = app(DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [
             'user' => $user,
             'totalAnswered' => $totalAnswered,
