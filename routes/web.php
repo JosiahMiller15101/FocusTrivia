@@ -73,6 +73,9 @@ Route::post('/question/comment', [QuestionCommentController::class, 'store'])->m
 // AJAX: React to a comment
 Route::post('/question/comment/react', [QuestionCommentController::class, 'react'])->middleware('auth')->name('question.comment.react');
 
+// Delete question comment
+Route::delete('/question/comment/{id}', [QuestionCommentController::class, 'destroy'])->middleware('auth')->name('question.comment.delete');
+
 // Profile image upload
 Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
 

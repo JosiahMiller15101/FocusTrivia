@@ -14,18 +14,17 @@ class QuestionController extends Controller
 {
      public function show()
     {
-        $questions = Question::orderBy('id')->get();
-
-        if ($questions->isEmpty()) {
+        $count = Question::count();
+        if ($count === 0) {
             abort(404, 'No questions found.');
         }
-
-        // Use a fixed start date for the question cycle
-        $start = Carbon::create(2024, 1, 1, 0, 0, 0, 'UTC'); // Set this to your actual trivia launch date
-        $now = Carbon::now('UTC');
-        $periods = floor($start->diffInHours($now) / 12);
-        $index = $periods % $questions->count();
-        $question = $questions[$index];
+        $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
+        $nowLocal   = Carbon::now('America/Denver');
+        $daysPassed = $startLocal->diffInDays($nowLocal);
+        $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
+        $periods = $daysPassed * 2 + $halfOfDay;
+        $index   = $periods % $count;
+        $question = Question::orderBy('id')->skip($index)->first();
 
         $allAnswers = json_decode($question->incorrect_answers);
         $allAnswers[] = $question->correct_answer;
@@ -40,18 +39,17 @@ class QuestionController extends Controller
 
     public function showAuthenticated() {
         $user = Auth::user();
-        $questions = Question::orderBy('id')->get();
-
-        if ($questions->isEmpty()) {
+        $count = Question::count();
+        if ($count === 0) {
             abort(404, 'No questions found.');
         }
-
-        // Use a fixed start date for the question cycle
-        $start = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver'); // Set this to your actual trivia launch date
-        $now = Carbon::now('America/Denver');
-        $periods = floor($start->diffInHours($now) / 12 + 1);
-        $index = $periods % $questions->count();
-        $question = $questions[$index];
+        $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
+        $nowLocal   = Carbon::now('America/Denver');
+        $daysPassed = $startLocal->diffInDays($nowLocal);
+        $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
+        $periods = $daysPassed * 2 + $halfOfDay;
+        $index   = $periods % $count;
+        $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
             ->where('question_id', $question->id)

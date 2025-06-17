@@ -55,4 +55,14 @@ class QuestionCommentController extends Controller
 
     return response()->json(['status' => 'added', 'counts' => $counts]);
     }
+
+    public function destroy($id)
+    {
+        $comment = \App\Models\QuestionComment::findOrFail($id);
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'Unauthorized');
+        }
+        $comment->delete();
+        return back()->with('success', 'Comment deleted.');
+    }
 }
