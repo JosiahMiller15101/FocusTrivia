@@ -61,6 +61,8 @@ class SelectDashboardController extends Controller
         });
         $departmentRank = $departmentRank !== false ? $departmentRank + 1 : 'N/A';
 
+        $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->take(10)->get();
+        $streak = app(\App\Http\Controllers\DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [
             'user' => $user,
             'totalAnswered' => $totalAnswered,
@@ -68,6 +70,8 @@ class SelectDashboardController extends Controller
             'score' => $score,
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,
+            'history' => $history,
+            'streak' => $streak,
         ]);
     }
 }
