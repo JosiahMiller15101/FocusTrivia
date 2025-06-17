@@ -26,7 +26,10 @@ class QuestionController extends Controller
         $index   = $periods % $count;
         $question = Question::orderBy('id')->skip($index)->first();
 
-        $allAnswers = json_decode($question->incorrect_answers);
+        $allAnswers = json_decode($question->incorrect_answers, true);
+        if (!is_array($allAnswers)) {
+            $allAnswers = [];
+        }
         $allAnswers[] = $question->correct_answer;
         shuffle($allAnswers);
 
@@ -55,7 +58,10 @@ class QuestionController extends Controller
             ->where('question_id', $question->id)
             ->exists();
 
-        $allAnswers = json_decode($question->incorrect_answers);
+        $allAnswers = json_decode($question->incorrect_answers, true);
+        if (!is_array($allAnswers)) {
+            $allAnswers = [];
+        }
         $allAnswers[] = $question->correct_answer;
         shuffle($allAnswers);
 

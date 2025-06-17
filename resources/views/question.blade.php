@@ -78,7 +78,7 @@
     <div 
         x-data="questionComponent({ 
             correct: @json($question->correct_answer), 
-            timeLimit: 30, 
+            timeLimit: 10, 
             answers: @json($answers) 
         })" 
         x-init="startTimer()" 
@@ -97,6 +97,9 @@
             <div class="bg-amber-500 h-2 rounded-full" :style="`width: ${(timeLeft/timeLimit)*100}%`"></div>
         </div>
         <form @submit.prevent="submitAnswer" class="space-y-3">
+            <template x-if="answers.length === 0">
+                <div class="text-red-600">No answers available for this question.</div>
+            </template>
             <template x-for="(answer, idx) in answers" :key="idx">
                 <div 
                     class="flex items-center space-x-2 rounded-lg border p-3 transition-colors"
@@ -127,7 +130,7 @@
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-width="2"/></svg>
                         Correct!
                     </h3>
-                    <p class="text-green-600">You earned <span x-text="points"></span> points</p>
+                    <p class="text-green-600">You earned 10 points!</p>
                 </div>
                 <div x-show="result === 'incorrect'" class="bg-red-50 p-4 rounded-lg">
                     <h3 class="font-bold text-red-700 flex items-center justify-center gap-2">
