@@ -76,9 +76,10 @@
       </div>
     @else
     <div 
-       x-data="questionComponent({ correct: @json($question->correct_answer), timeLimit: 10, answers: @json($answers) })"
-     x-init="startTimer()"
-     class="relative"></div>
+            x-data="questionComponent({ correct: @json($question->correct_answer), timeLimit: 10, answers: @json($answers) })"
+            x-init="startTimer()"
+            class="relative"
+        >
 
 
         <div class="flex justify-between items-center mb-2">
@@ -140,42 +141,37 @@
         </template>
     </div>
     <script>
-    function questionComponent({ correct, timeLimit, answers }) {
-        return {
-            answers: answers,
-            correct: correct,
-            selected: '',
-            isAnswered: false,
-            result: null,
-            points: 0,
-            timeLimit: timeLimit,
-            timeLeft: timeLimit,
-            timer: null,
-            startTimer() {
-                if (this.timer) clearInterval(this.timer);
-                this.timeLeft = this.timeLimit;
-                this.timer = setInterval(() => {
-                    if (!this.isAnswered && this.timeLeft > 0) {
-                        this.timeLeft--;
-                    }
-                    if (this.timeLeft === 0 && !this.isAnswered) {
-                        this.submitAnswer();
-                    }
-                }, 1000);
-            },
-            submitAnswer() {
-                this.isAnswered = true;
-                clearInterval(this.timer);
-                if (this.selected === this.correct) {
-                    this.result = 'correct';
-                    this.points = Math.max(10, 10 + this.timeLeft);
-                } else {
-                    this.result = 'incorrect';
-                }
-            }
-        }
-    }
-    </script>
+  function questionComponent({ correct, timeLimit, answers }) {
+    return {
+      answers,
+      correct,
+      selected: '',
+      isAnswered: false,
+      result: null,
+      points: 0,
+      timeLimit,
+      timeLeft: timeLimit,
+      timer: null,
+      startTimer() {
+        if (this.timer) clearInterval(this.timer);
+        this.timeLeft = this.timeLimit;
+        this.timer = setInterval(() => {
+          if (!this.isAnswered && this.timeLeft > 0) {
+            this.timeLeft--;
+          }
+          if (this.timeLeft === 0 && !this.isAnswered) {
+            this.submitAnswer();
+          }
+        }, 1000);
+      },
+      submitAnswer() {
+        this.isAnswered = true;
+        clearInterval(this.timer);
+        this.result = this.selected === this.correct ? 'correct' : 'incorrect';
+      }
+    };
+  }
+</script>
     @endif
   </div>
   @section('scripts')
