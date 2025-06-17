@@ -84,7 +84,7 @@
         x-init="startTimer()" 
         class="relative"
     >
-    <pre>{{ json_encode($answers) }}</pre>
+
         <div class="flex justify-between items-center mb-2">
             <div>
                 <h3 class="text-lg font-medium">{{ $question->question }}</h3>
