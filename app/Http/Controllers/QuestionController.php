@@ -49,7 +49,7 @@ class QuestionController extends Controller
         // Use a fixed start date for the question cycle
         $start = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver'); // Set this to your actual trivia launch date
         $now = Carbon::now('America/Denver');
-        $periods = floor($start->diffInHours($now) / 12);
+        $periods = floor($start->diffInHours($now) / 12 + 1);
         $index = $periods % $questions->count();
         $question = $questions[$index];
 
