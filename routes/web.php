@@ -79,6 +79,9 @@ Route::delete('/question/comment/{id}', [QuestionCommentController::class, 'dest
 // Profile image upload
 Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
 
+// Add route for question answer submission (original style)
+Route::post('/question/submit', [App\Http\Controllers\QuestionSubmissionController::class, 'store']);
+
  Route::get('/env-check', function () {
     dd(app()->environment());
 });
