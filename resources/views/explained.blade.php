@@ -3,7 +3,7 @@
     How The Rankings Work
   </x-slot>
 
-  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-black">
+  <div class="p-6 bg-white rounded shadow-lg mb-10 ring-2 ring-gray-400">
     <h2 class="text-xl font-semibold mb-4">Understanding the Rankings</h2>
     <p class="mb-4">
       The rankings in FOCUS Trivia are designed to reflect both individual and departmental performance. Here's how it works:
