@@ -77,6 +77,11 @@
         </div>
       </div>
     @else
+      @if(session('error'))
+        <div class="p-4 bg-red-100 text-red-800 rounded mb-4">
+          {{ session('error') }}
+        </div>
+      @endif
       {{-- Timer and Form --}}
       <div class="mt-4">
         <h3 class="text-lg font-medium mb-4">{{ $question->question }}</h3>

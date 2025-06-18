@@ -23,7 +23,7 @@ class QuestionController extends Controller
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
         $periods = $daysPassed * 2 + $halfOfDay;
-        $index   = $periods % $count;
+        $index   = ($periods+1) % $count;
         $question = Question::orderBy('id')->skip($index)->first();
 
         $allAnswers = json_decode($question->incorrect_answers);
@@ -48,8 +48,8 @@ class QuestionController extends Controller
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
         $periods = $daysPassed * 2 + $halfOfDay;
-        $index2   = $periods % $count;
-        $index = $index2 + 1;
+        // Show the next question (e.g., +1 from today)
+        $index   = ($periods + 2) % $count; // +1 for next, +2 for two ahead, etc.
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
