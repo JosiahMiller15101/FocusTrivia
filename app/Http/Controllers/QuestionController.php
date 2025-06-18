@@ -47,8 +47,9 @@ class QuestionController extends Controller
         $nowLocal   = Carbon::now('America/Denver');
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
-        $periods = $daysPassed * 2 + $halfOfDay + 1;
-        $index   = $periods % $count;
+        $periods = $daysPassed * 2 + $halfOfDay;
+        $index2   = $periods % $count;
+        $index = $index2 + 1;
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
