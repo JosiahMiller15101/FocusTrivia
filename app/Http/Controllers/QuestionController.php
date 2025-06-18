@@ -47,7 +47,7 @@ class QuestionController extends Controller
         $nowLocal   = Carbon::now('America/Denver');
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
-        $periods = $daysPassed * 2 + $halfOfDay;
+        $periods = $daysPassed * 2 + $halfOfDay + 1;
         $index   = $periods % $count;
         $question = Question::orderBy('id')->skip($index)->first();
 
