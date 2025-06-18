@@ -48,8 +48,7 @@ class QuestionController extends Controller
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
         $periods = $daysPassed * 2 + $halfOfDay;
-        // Show the next question (e.g., +1 from today)
-        $index   = ($periods + 2) % $count; // +1 for next, +2 for two ahead, etc.
+        $index   = ($periods + 2) % $count; 
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)

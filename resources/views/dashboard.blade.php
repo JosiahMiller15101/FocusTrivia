@@ -92,7 +92,7 @@
                 $category = $question->category ?? 'General';
                 $date = $submission->created_at->format('M d, Y');
                 $userAnswer = $submission->answer;
-                $correctAnswer = $question->answer ?? null;
+                $correctAnswer = $question->correct_answer ?? null;
               @endphp
               <div class="relative bg-gray-50 border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row md:items-center gap-2 shadow-sm">
                 <!-- Icon and points -->
@@ -120,7 +120,7 @@
                     <span class="text-xs font-semibold {{ $isCorrect ? 'text-green-700' : 'text-red-600' }}">{{ $userAnswer }}</span>
                     @if(!$isCorrect && $correctAnswer)
                       <span class="text-xs font-semibold text-gray-500 ml-2">Correct answer:</span>
-                      <span class="font-semibold text-green-700">{{ $correctAnswer }}</span>
+                      <span class="text-xs font-semibold text-green-700">{{ $correctAnswer }}</span>
                     @endif
                   </div>
                 </div>
