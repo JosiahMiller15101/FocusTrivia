@@ -1,3 +1,6 @@
+@php
+  use Carbon\Carbon;
+@endphp
 <x-layout>
   <x-slot:heading>
     Daily Question
@@ -17,9 +20,29 @@
       </div>
     @endif
 
+    @php 
+    $nowLocal = Carbon::now('America/Denver');
+    $halfOfDay  = (int) floor($nowLocal->hour / 12);
+    if ($nowLocal->hour < 12) {
+        $nextQuestionTime = Carbon::today($nowLocal->timezone)->addHours(12);
+    } else {
+        $nextQuestionTime = Carbon::tomorrow($nowLocal->timezone)->addHours(12);
+    }
+    $diffSeconds = $nowLocal->diffInSeconds($nextQuestionTime, false);
+    if ($diffSeconds > 0) {
+        $hours = floor($diffSeconds / 3600);
+        $minutes = floor(($diffSeconds % 3600) / 60);
+        $seconds = $diffSeconds % 60;
+        $timeUntilNext = sprintf('%02dh %02dm %02ds', $hours, $minutes, $seconds);
+    } else {
+        $timeUntilNext = 'Now!';
+    }
+    @endphp
+    
     @if($alreadySubmitted)
       <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-        Question has already been answered. Questions reset at 12AM and 12PM, see you then!
+        <p>Question has already been answered. Questions reset at 12AM and 12PM, see you then!</p>
+        <p>Time until next question: {{ $timeUntilNext }}</p>
       </div>
 
       {{-- Comments --}}

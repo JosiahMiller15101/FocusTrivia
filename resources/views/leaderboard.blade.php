@@ -33,14 +33,22 @@
                   @else
                     {{ $rank }}
                   @endif
+                  @if(isset($user->rank_movement))
+                    @if($user->rank_movement === 'up')
+                      <span title="Rank Up" class="ml-1 text-green-600">&#9650;</span>
+                    @elseif($user->rank_movement === 'down')
+                      <span title="Rank Down" class="ml-1 text-red-600">&#9660;</span>
+                    @endif
+                  @endif
                 </td>
                 <td class="py-2 flex items-center gap-2">
                   @php
-                    $profileImage = $user->profile_image ?? null;
-                    $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
+                    // Always use the accessor for profile_image, which handles guest logic
+                    $profileImage = $user->profile_image;
+                    $isAbsolute = $profileImage && (Str::startsWith($profileImage, ['http://', 'https://']) || Str::startsWith($profileImage, ['/']));
                   @endphp
                   @if($profileImage)
-                    <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                    <img src="{{ $profileImage }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
                   @else
                     <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
                   @endif
@@ -53,8 +61,8 @@
                     {{ $user->department }}
                   </a>
                 </td>
-                <td class="py-2">{{ $user->score }}</td>
-                <td class="py-2">{{ $user->accuracy }}%</td>
+                <td class="py-2">{{ $user->display_score }}</td>
+                <td class="py-2">{{ $user->display_accuracy }}%</td>
             </tr>
         @endforeach
       </tbody>
@@ -155,7 +163,16 @@
                 {{ $index + 1 }}
               @endif
             </td>
-            <td class="py-2">
+            <td class="py-2 flex items-center gap-2">
+              @php
+                $profileImage = $user->profile_image;
+                $isAbsolute = $profileImage && (Str::startsWith($profileImage, ['http://', 'https://']) || Str::startsWith($profileImage, ['/']));
+              @endphp
+              @if($profileImage)
+                <img src="{{ $profileImage }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @else
+                <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
+              @endif
               <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
                 {{ $user->first_name }} {{ $user->last_name }}
               </a>

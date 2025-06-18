@@ -16,43 +16,70 @@ public function index()
         ->get()
         ->filter(function ($user) {
             return strtolower(trim($user->department)) !== 'guest';
-        })
-        ->map(function ($user) {
-            $correct = $user->submissions->where('is_correct', true)->count();
-            $total = $user->submissions->count();
-            $wrong = $total - $correct;
-            $user->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
-            $user->total_answered = $total;
-            $user->score = ($correct * 10) - ($wrong * 10);
-            return $user;
-        })
-        ->sortByDesc(function ($user) {
-            // Sort by score DESC, then by total_answered DESC
-            return [$user->score, $user->submissions->count()];
-        })
-        ->values();
+        });
+
+    // Prepare a display array to avoid dirtying Eloquent models
+    $displayUsers = collect();
+    $sortedUsers = $users->map(function ($user) {
+        $correct = $user->submissions->where('is_correct', true)->count();
+        $total = $user->submissions->count();
+        $wrong = $total - $correct;
+        $display = [
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'department' => $user->department,
+            'profile_image' => $user->profile_image,
+            'previous_rank' => $user->previous_rank,
+            'display_accuracy' => $total > 0 ? round($correct / $total * 100, 1) : 0,
+            'display_total_answered' => $total,
+            'display_score' => ($correct * 10) - ($wrong * 10),
+            'submissions' => $user->submissions,
+        ];
+        return (object) $display;
+    })->sortByDesc(function ($user) {
+        return [$user->display_score, $user->display_total_answered];
+    })->values();
+
+    // Assign current rank and compare with previous_rank
+    foreach ($sortedUsers as $i => $displayUser) {
+        $currentRank = $i + 1;
+        $displayUser->current_rank = $currentRank;
+        $displayUser->rank_movement = null;
+        $user = $users->firstWhere('id', $displayUser->id);
+        // If previous_rank is null, treat as a high value so first calculation always shows up arrow if not first place
+        $previousRank = isset($user->previous_rank) && $user->previous_rank !== null ? $user->previous_rank : (count($sortedUsers) + 1);
+        if ($previousRank > $currentRank) {
+            $displayUser->rank_movement = 'up';
+        } elseif ($previousRank < $currentRank) {
+            $displayUser->rank_movement = 'down';
+        }
+        // Debug: log rank movement for troubleshooting
+        // \Log::info("User {$user->id} prev: {$previousRank}, curr: {$currentRank}, move: {$displayUser->rank_movement}");
+        $user->update(['previous_rank' => $currentRank]);
+    }
 
     // Manual pagination for the users collection
     $perPage = 10;
     $page = request('page', 1);
     $paginatedUsers = new LengthAwarePaginator(
-        $users->forPage($page, $perPage)->values(), // reset keys here!
-        $users->count(),
+        $sortedUsers->forPage($page, $perPage)->values(),
+        $sortedUsers->count(),
         $perPage,
         $page,
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
     // Leaderboard for top departments by score per player (excluding 'guest'), cached with Redis
-    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($users) {
-        return $users
+    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($sortedUsers) {
+        return $sortedUsers
             ->groupBy('department')
             ->filter(function ($users, $dept) {
                 return strtolower(trim($dept)) !== 'guest';
             })
             ->map(function ($users, $dept) {
-                $totalScore = $users->sum('score');
-                $averageAccuracy = $users->avg('accuracy');
+                $totalScore = $users->sum('display_score');
+                $averageAccuracy = $users->avg('display_accuracy');
                 $numPlayers = $users->count();
                 $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
                 return [
