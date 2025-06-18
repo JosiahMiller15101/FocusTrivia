@@ -163,9 +163,14 @@
             </div>
             <div class="mb-6 flex items-center gap-x-2">
                 <label class="block text-sm font-medium text-gray-700 min-w-[110px]">Department</label>
-                <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
-                       class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg focus:ring-indigo-500 focus:border-indigo-500" disabled id="department_input">
-                <button type="button" class="shadow-lg ml-2 px-2 py-1 bg-slate-600 text-white rounded edit-btn hover:bg-slate-500" data-target="department_input">Edit</button>
+                @if(strtolower(trim(Auth::user()->department)) === 'guest')
+                  <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
+                         class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg bg-gray-100 text-gray-400 cursor-not-allowed" disabled id="department_input">
+                @else
+                  <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
+                         class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg focus:ring-indigo-500 focus:border-indigo-500" disabled id="department_input">
+                  <button type="button" class="shadow-lg ml-2 px-2 py-1 bg-slate-600 text-white rounded edit-btn hover:bg-slate-500" data-target="department_input">Edit</button>
+                @endif
             </div>
             <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">
                 Save Changes
