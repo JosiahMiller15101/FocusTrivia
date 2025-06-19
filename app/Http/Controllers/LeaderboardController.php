@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\QuestionSubmission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
@@ -91,13 +92,16 @@ public function index()
                 $totalScore = $users->sum('display_score');
                 $averageAccuracy = $users->avg('display_accuracy');
                 $numPlayers = $users->count();
-                $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
+                $userIds = $users->pluck('id');
+                $numSubs = QuestionSubmission::whereIn('user_id', $userIds)->count();
+                $scorePerPlayer = $numPlayers > 0 && $numSubs > 0 ? $totalScore / sqrt($numSubs) : 0;
                 return [
                     'department' => $dept,
                     'total_score' => $totalScore,
                     'average_accuracy' => $averageAccuracy,
                     'score_per_player' => $scorePerPlayer,
                     'num_players' => $numPlayers,
+                    'num_submissions' => $numSubs,
                 ];
             })
             ->sortByDesc('score_per_player')

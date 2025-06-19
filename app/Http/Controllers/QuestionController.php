@@ -12,31 +12,6 @@ use App\Models\QuestionComment;
 
 class QuestionController extends Controller
 {
-     public function show()
-    {
-        $count = Question::count();
-        if ($count === 0) {
-            abort(404, 'No questions found.');
-        }
-        $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
-        $nowLocal   = Carbon::now('America/Denver');
-        $daysPassed = $startLocal->diffInDays($nowLocal);
-        $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
-        $periods = $daysPassed * 2 + $halfOfDay;
-        $index   = ($periods+1) % $count;
-        $question = Question::orderBy('id')->skip($index)->first();
-
-        $allAnswers = json_decode($question->incorrect_answers);
-        $allAnswers[] = $question->correct_answer;
-        shuffle($allAnswers);
-
-        return view('question', [
-            'question' => $question,
-            'answers' => $allAnswers,
-            'alreadySubmitted' => false
-        ]);
-    }
-
     public function showAuthenticated() {
         $user = Auth::user();
         $count = Question::count();
@@ -48,7 +23,7 @@ class QuestionController extends Controller
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
         $periods = $daysPassed * 2 + $halfOfDay;
-        $index   = ($periods + 3) % $count; 
+        $index   = (($periods) % $count) + 3; // 0-based index
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)

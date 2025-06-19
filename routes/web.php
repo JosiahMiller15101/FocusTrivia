@@ -35,7 +35,7 @@ Route::post('/login', [SessionController::class, 'store']);
 Route::post('/logout', [SessionController::class, 'destroy']);
 
 //question 
-Route::get('/question', [QuestionController::class, 'show']);
+Route::get('/question', [QuestionController::class, 'showAuthenticated'])->middleware('auth')->name('question.show');
 
 //middelware
 Route::middleware('auth')->get('/question', [QuestionController::class, 'showAuthenticated']);
