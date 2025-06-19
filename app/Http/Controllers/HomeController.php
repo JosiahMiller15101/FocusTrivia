@@ -21,6 +21,21 @@ class HomeController extends Controller
         $totalSubmissions = QuestionSubmission::count();
         $uniqueDepartments = User::whereNotNull('department')->distinct('department')->count('department');
 
-        return view('home', compact('nowLocal', 'nextQuestionTime', 'totalUsers', 'totalSubmissions', 'uniqueDepartments'));
+        // Calculate overall accuracy average of all users
+$users = User::with('submissions')->get();
+
+$totalCorrect = 0;
+$totalSubmissions = 0;
+
+foreach ($users as $user) {
+    $total = $user->submissions->count();
+    $correct = $user->submissions->where('is_correct', true)->count();
+    $totalCorrect += $correct;
+    $totalSubmissions += $total;
+}
+
+$overallAccuracy = $totalSubmissions > 0 ? round(($totalCorrect / $totalSubmissions) * 100, 1) : 0;
+
+        return view('home', compact('nowLocal', 'nextQuestionTime', 'totalUsers', 'totalSubmissions', 'uniqueDepartments', 'overallAccuracy'));
     }
 }

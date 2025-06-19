@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\QuestionSubmission;
 
 class SelectDepartmentDashboardController extends Controller
 {
@@ -32,7 +33,9 @@ class SelectDepartmentDashboardController extends Controller
         $totalCorrectAnswers = $users->sum(function ($u) {
             return $u->submissions->where('is_correct', true)->count();
         });
-        $scorePerPlayer = $numPlayers > 0 ? $totalScore / sqrt($numPlayers) : 0;
+        $userIds = $users->pluck('id');
+        $numSubs = QuestionSubmission::whereIn('user_id', $userIds)->count();
+        $scorePerPlayer = ($numPlayers > 0 && $numSubs > 0) ? $totalScore / sqrt($numSubs) : 0;
         $averageAccuracy = $users->avg(function ($u) {
             $total = $u->submissions->count();
             $correct = $u->submissions->where('is_correct', true)->count();
@@ -66,6 +69,7 @@ class SelectDepartmentDashboardController extends Controller
             'numPlayers' => $numPlayers,
             'totalQuestionsAnswered' => $totalQuestionsAnswered,
             'totalCorrectAnswers' => $totalCorrectAnswers,
+            'numSubmissions' => $numSubs,
         ]);
     }
 }

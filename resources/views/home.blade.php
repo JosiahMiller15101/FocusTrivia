@@ -44,11 +44,16 @@
       <div class="text-3xl font-bold text-slate-600">{{ $totalSubmissions }}</div>
       <div class="text-sm">Questions Answered</div>
     </div>
+     <div class="text-center">
+      <div class="text-3xl font-bold text-slate-600">{{ $overallAccuracy }}%</div>
+      <div class="text-sm">Overall Accuracy</div>
+    </div>
     <div class="text-center">
       <div class="text-3xl font-bold text-slate-600">{{ $uniqueDepartments }}</div>
       <div class="text-sm">Departments</div>
     </div>
   </div>
 </div>
+
 <script src="/js/home.js"></script>
 </x-layout>
