@@ -17,6 +17,7 @@
     @if(session('error'))
       <div class="p-4 bg-red-100 text-red-800 rounded mb-4">
         {{ session('error') }}
+        <p>Correct Answer: <strong>{{ $question->correct_answer }}</strong></p>
       </div>
     @endif
 
@@ -26,7 +27,7 @@
     if ($nowLocal->hour < 12) {
         $nextQuestionTime = Carbon::today($nowLocal->timezone)->addHours(12);
     } else {
-        $nextQuestionTime = Carbon::tomorrow($nowLocal->timezone)->addHours(12);
+        $nextQuestionTime = Carbon::today($nowLocal->timezone)->addHours(24);
     }
     $diffSeconds = $nowLocal->diffInSeconds($nextQuestionTime, false);
     if ($diffSeconds > 0) {
@@ -41,8 +42,8 @@
     
     @if($alreadySubmitted)
       <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-        <p>Question has already been answered. Questions reset at 12AM and 12PM, see you then!</p>
-        <p>Time until next question: {{ $timeUntilNext }}</p>
+        <p>Question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
+        <p>Time until next question: <strong>{{ $timeUntilNext }}</strong></p>
       </div>
 
       {{-- Comments --}}

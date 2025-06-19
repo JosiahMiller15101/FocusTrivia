@@ -11,6 +11,13 @@ class LeaderboardController extends Controller
 
 public function index()
 {
+    // Calculate the current round (e.g., every 12 hours since a fixed start date)
+    $startLocal = now('America/Denver')->setDate(2024, 1, 1)->startOfDay();
+    $nowLocal = now('America/Denver');
+    $daysPassed = $startLocal->diffInDays($nowLocal);
+    $halfOfDay = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
+    $currentRound = (int) ($daysPassed * 2 + $halfOfDay);
+
     // Get all users (excluding Guests), calculate accuracy, and paginate manually
     $users = User::with('submissions')
         ->get()
@@ -41,22 +48,25 @@ public function index()
         return [$user->display_score, $user->display_total_answered];
     })->values();
 
-    // Assign current rank and compare with previous_rank
+    // Only update previous_rank at the start of a new round
     foreach ($sortedUsers as $i => $displayUser) {
         $currentRank = $i + 1;
         $displayUser->current_rank = $currentRank;
         $displayUser->rank_movement = null;
         $user = $users->firstWhere('id', $displayUser->id);
-        // If previous_rank is null, treat as a high value so first calculation always shows up arrow if not first place
         $previousRank = isset($user->previous_rank) && $user->previous_rank !== null ? $user->previous_rank : (count($sortedUsers) + 1);
         if ($previousRank > $currentRank) {
             $displayUser->rank_movement = 'up';
         } elseif ($previousRank < $currentRank) {
             $displayUser->rank_movement = 'down';
         }
-        // Debug: log rank movement for troubleshooting
-        // \Log::info("User {$user->id} prev: {$previousRank}, curr: {$currentRank}, move: {$displayUser->rank_movement}");
-        $user->update(['previous_rank' => $currentRank]);
+        // Only update previous_rank and last_rank_update_round if a new round has started
+        if ($user->last_rank_update_round !== $currentRound) {
+            $user->update([
+                'previous_rank' => $currentRank,
+                'last_rank_update_round' => $currentRound
+            ]);
+        }
     }
 
     // Manual pagination for the users collection

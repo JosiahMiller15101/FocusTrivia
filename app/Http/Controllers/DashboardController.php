@@ -7,6 +7,8 @@ use App\Models\QuestionSubmission;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 
 class DashboardController extends Controller
 {
@@ -22,6 +24,17 @@ class DashboardController extends Controller
         $history = $this->getRecentSubmissions($user->id);
         $streak = $this->calculateStreak($user->id);
 
+        
+        $perPage = 3;
+        $page = request('page', 1);
+        $recentActivity = new LengthAwarePaginator(
+        $history->forPage($page, $perPage)->values(),
+        $history->count(),
+        $perPage,
+        $page,
+        ['path' => request()->url(), 'query' => request()->query()]
+    );
+
         return view('dashboard', [
             'first_name' => $user->first_name,
             'totalAnswered' => $stats['totalAnswered'],
@@ -29,7 +42,7 @@ class DashboardController extends Controller
             'score' => $stats['score'],
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,
-            'history' => $history,
+            'history' => $recentActivity,
             'streak' => $streak,
         ]);
     }

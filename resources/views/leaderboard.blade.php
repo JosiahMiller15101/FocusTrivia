@@ -52,14 +52,18 @@
                   @else
                     <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
                   @endif
-                  <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
-                    {{ $user->first_name }} {{ $user->last_name }}
-                  </a>
+                  <span class="inline-block min-w-[120px]">
+                    <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold transition-all duration-150">
+                      {{ $user->first_name }} {{ $user->last_name }}
+                    </a>
+                  </span>
                 </td>
                 <td class="py-2">
-                  <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold">
-                    {{ $user->department }}
-                  </a>
+                  <span class="inline-block min-w-[160px]">
+                    <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150">
+                      {{ $user->department }}
+                    </a>
+                  </span>
                 </td>
                 <td class="py-2">{{ $user->display_score }}</td>
                 <td class="py-2">{{ $user->display_accuracy }}%</td>
@@ -106,12 +110,15 @@
               @endif
             </td>
             <td class="py-2 px-4">
+              <span class="inline-block min-w-[180px]">
               <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold">
                 {{ $dept['department'] }}
+              </a>
                 @if(isset($dept['num_players']))
                   ({{ $dept['num_players'] }})
                 @endif
               </a>
+                </span>
             </td>
             <td class="py-2 px-4">{{ isset($dept['score_per_player']) ? number_format($dept['score_per_player'], 1) : 'N/A' }}</td>
             <td class="py-2 px-4">{{ $dept['total_score'] }}</td>
@@ -173,9 +180,11 @@
               @else
                 <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
               @endif
-              <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold">
-                {{ $user->first_name }} {{ $user->last_name }}
-              </a>
+              <span class="inline-block min-w-[120px]">
+                <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold transition-all duration-150">
+                  {{ $user->first_name }} {{ $user->last_name }}
+                </a>
+              </span>
             </td>
             <td class="py-2">{{ $user->score }}</td>
             <td class="py-2">{{ $user->accuracy }}%</td>

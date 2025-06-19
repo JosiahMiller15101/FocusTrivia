@@ -130,6 +130,9 @@
         @else
           <div class="text-gray-500">No recent activity yet.</div>
         @endif
+         <div class="mt-4 flex justify-end flex-col space-y-2">
+      {{ $history->links() }}
+    </div>
       </div>
 
       @if (!isset($user) || (isset($user) && $user->id === Auth::id()))

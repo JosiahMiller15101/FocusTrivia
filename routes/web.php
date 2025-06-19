@@ -12,12 +12,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SelectDashboardController;
 use App\Http\Controllers\SelectDepartmentDashboardController;
 use App\Http\Controllers\QuestionCommentController;
+use Carbon\Carbon;
+use App\Http\Controllers\HomeController;
 
 
 //home
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [HomeController::class, 'index']);
 
 //leaderboard
 Route::get('/leaderboard', [LeaderboardController::class, 'index']);
