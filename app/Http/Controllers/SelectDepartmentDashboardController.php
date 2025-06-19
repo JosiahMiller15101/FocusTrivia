@@ -24,7 +24,7 @@ class SelectDepartmentDashboardController extends Controller
         $totalScore = $users->sum(function ($u) {
             $correct = $u->submissions->where('is_correct', true)->count();
             $wrong = $u->submissions->count() - $correct;
-            return ($correct * 10) - ($wrong * 10);
+            return ($correct * 100) - ($wrong * 100);
         });
         $numPlayers = $users->count();
         $totalQuestionsAnswered = $users->sum(function ($u) {
@@ -47,7 +47,7 @@ class SelectDepartmentDashboardController extends Controller
             $total = $u->submissions->count();
             $correct = $u->submissions->where('is_correct', true)->count();
             $wrong = $total - $correct;
-            $score = ($correct * 10) - ($wrong * 10);
+            $score = ($correct * 100) - ($wrong * 100);
             $accuracy = $total > 0 ? round(($correct / $total) * 100, 1) : 0;
             return [
                 'id' => $u->id,

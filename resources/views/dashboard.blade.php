@@ -60,7 +60,7 @@
           :icon="'<svg class=\'h-5 w-5 text-blue-600 mr-2\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'8\' r=\'7\'/><path d=\'M8.21 13.89l-1.42 4.25a1 1 0 0 0 1.45 1.12l3.76-2.18 3.76 2.18a1 1 0 0 0 1.45-1.12l-1.42-4.25\'/></svg>'"
           title="Total Points"
           :value="number_format($score ?? 0)"
-          :description="'Rank #' . ($playerRank ?? 'N/A') . ' overall • #' . ($departmentRank ?? 'N/A') . ' in your department'"
+          :description="'Rank #' . ($playerRank ?? 'N/A') . ' overall • #' . ($departmentPlayerRank ?? 'N/A') . ' in department'"
         />
         <x-stat-card 
           :icon="'<svg class=\'h-5 w-5 text-green-600 mr-2\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' viewBox=\'0 0 24 24\'><path d=\'M9 12l2 2l4-4\'/><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'"

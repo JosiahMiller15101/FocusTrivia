@@ -19,12 +19,9 @@ public function index()
     $halfOfDay = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
     $currentRound = (int) ($daysPassed * 2 + $halfOfDay);
 
-    // Get all users (excluding Guests), calculate accuracy, and paginate manually
+    // Get all users (including Guests), calculate accuracy, and paginate manually
     $users = User::with('submissions')
-        ->get()
-        ->filter(function ($user) {
-            return strtolower(trim($user->department)) !== 'guest';
-        });
+        ->get();
 
     // Prepare a display array to avoid dirtying Eloquent models
     $displayUsers = collect();
@@ -41,7 +38,7 @@ public function index()
             'previous_rank' => $user->previous_rank,
             'display_accuracy' => $total > 0 ? round($correct / $total * 100, 1) : 0,
             'display_total_answered' => $total,
-            'display_score' => ($correct * 10) - ($wrong * 10),
+            'display_score' => ($correct * 100) - ($wrong * 100),
             'submissions' => $user->submissions,
         ];
         return (object) $display;
@@ -81,13 +78,10 @@ public function index()
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
-    // Leaderboard for top departments by score per player (excluding 'guest'), cached with Redis
+    // Leaderboard for top departments by score per player (including 'guest')
     $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($sortedUsers) {
         return $sortedUsers
             ->groupBy('department')
-            ->filter(function ($users, $dept) {
-                return strtolower(trim($dept)) !== 'guest';
-            })
             ->map(function ($users, $dept) {
                 $totalScore = $users->sum('display_score');
                 $averageAccuracy = $users->avg('display_accuracy');

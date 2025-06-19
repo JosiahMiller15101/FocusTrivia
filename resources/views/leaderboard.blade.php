@@ -186,7 +186,7 @@
                 </a>
               </span>
             </td>
-            <td class="py-2">{{ $user->score }}</td>
+            <td class="py-2">{{ $user->score*10 }}</td>
             <td class="py-2">{{ $user->accuracy }}%</td>
           </tr>
         @endforeach

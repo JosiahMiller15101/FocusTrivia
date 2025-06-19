@@ -35,6 +35,32 @@ class DashboardController extends Controller
         ['path' => request()->url(), 'query' => request()->query()]
     );
 
+        // Build department player table and rank like SelectDepartmentDashboardController
+        $departmentUsers = User::with('submissions')
+            ->whereRaw('LOWER(TRIM(department)) = ?', [strtolower(trim($user->department))])
+            ->whereRaw('LOWER(TRIM(department)) != ?', ['guest'])
+            ->get();
+        $departmentPlayers = $departmentUsers->map(function ($u) {
+            $total = $u->submissions->count();
+            $correct = $u->submissions->where('is_correct', true)->count();
+            $score = ($correct * 100) - (($total - $correct) * 100);
+            return [
+                'id' => $u->id,
+                'name' => $u->first_name . ' ' . $u->last_name,
+                'score' => $score,
+                'accuracy' => $total > 0 ? round(($correct / $total) * 100, 1) : 0,
+                'total_answered' => $total,
+            ];
+        })->sortByDesc(function ($p) {
+            return [$p['score'], $p['total_answered']];
+        })->values();
+        // Debug: Uncomment the next line to inspect the player list and user ID
+        // dd($departmentPlayers, $user->id);
+        $departmentPlayerRank = $departmentPlayers->search(function ($p) use ($user) {
+            return (int)$p['id'] === (int)$user->id;
+        });
+        $departmentPlayerRank = $departmentPlayerRank !== false ? $departmentPlayerRank + 1 : 'N/A';
+
         return view('dashboard', [
             'first_name' => $user->first_name,
             'totalAnswered' => $stats['totalAnswered'],
@@ -42,6 +68,8 @@ class DashboardController extends Controller
             'score' => $stats['score'],
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,
+            'departmentPlayerRank' => $departmentPlayerRank,
+            'departmentPlayers' => $departmentPlayers,
             'history' => $recentActivity,
             'streak' => $streak,
         ]);
@@ -52,7 +80,7 @@ class DashboardController extends Controller
         $totalAnswered = QuestionSubmission::where('user_id', $userId)->count();
         $correctAnswers = QuestionSubmission::where('user_id', $userId)->where('is_correct', true)->count();
         $wrongAnswers = $totalAnswered - $correctAnswers;
-        $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
+        $score = ($correctAnswers * 100) - ($wrongAnswers * 100);
 
         return [
             'totalAnswered' => $totalAnswered,
@@ -73,7 +101,7 @@ class DashboardController extends Controller
 
                 $u->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
                 $u->total_answered = $total;
-                $u->score = ($correct * 10) - ($wrong * 10);
+                $u->score = ($correct * 100) - ($wrong * 100);
 
                 return $u;
             })

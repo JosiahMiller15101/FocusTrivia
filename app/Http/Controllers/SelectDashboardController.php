@@ -15,7 +15,7 @@ class SelectDashboardController extends Controller
         $totalAnswered = $submissions->count();
         $correctAnswers = $submissions->where('is_correct', true)->count();
         $wrongAnswers = $totalAnswered - $correctAnswers;
-        $score = ($correctAnswers * 10) - ($wrongAnswers * 10);
+        $score = ($correctAnswers * 100) - ($wrongAnswers * 100);
         $correctPercentage = $totalAnswered > 0 ? round(($correctAnswers / $totalAnswered) * 100, 1) : 0;
 
         // Calculate player rank (excluding guests)
@@ -27,7 +27,7 @@ class SelectDashboardController extends Controller
             $wrong = $total - $correct;
             $u->accuracy = $total > 0 ? round($correct / $total * 100, 1) : 0;
             $u->total_answered = $total;
-            $u->score = ($correct * 10) - ($wrong * 10);
+            $u->score = ($correct * 100) - ($wrong * 100);
             return $u;
         })->sortByDesc(function ($u) {
             // Sort by score DESC, then by total_answered DESC
@@ -62,6 +62,32 @@ class SelectDashboardController extends Controller
         });
         $departmentRank = $departmentRank !== false ? $departmentRank + 1 : 'N/A';
 
+        // Calculate department player rank for the selected user (including guests)
+        $department = strtolower(trim($user->department));
+        $departmentUsers = User::with('submissions')
+            ->get()
+            ->filter(function ($u) use ($department) {
+                return strtolower(trim($u->department)) === $department;
+            });
+        $departmentPlayers = $departmentUsers->map(function ($u) {
+            $total = $u->submissions->count();
+            $correct = $u->submissions->where('is_correct', true)->count();
+            $score = ($correct * 100) - (($total - $correct) * 100);
+            return [
+                'id' => $u->id,
+                'name' => $u->first_name . ' ' . $u->last_name,
+                'score' => $score,
+                'accuracy' => $total > 0 ? round(($correct / $total) * 100, 1) : 0,
+                'total_answered' => $total,
+            ];
+        })->sortByDesc(function ($p) {
+            return [$p['score'], $p['total_answered']];
+        })->values();
+        $departmentPlayerRank = $departmentPlayers->search(function ($p) use ($user) {
+            return (int)$p['id'] === (int)$user->id;
+        });
+        $departmentPlayerRank = $departmentPlayerRank !== false ? $departmentPlayerRank + 1 : 'N/A';
+
         $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->paginate(10);
         $streak = app(DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [
@@ -71,6 +97,7 @@ class SelectDashboardController extends Controller
             'score' => $score,
             'playerRank' => $playerRank,
             'departmentRank' => $departmentRank,
+            'departmentPlayerRank' => $departmentPlayerRank,
             'history' => $history,
             'streak' => $streak,
         ]);

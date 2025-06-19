@@ -42,7 +42,7 @@
     </div>
     <div class="text-center">
       <div class="text-3xl font-bold text-slate-600">{{ $totalSubmissions }}</div>
-      <div class="text-sm">Questions Answered</div>
+      <div class="text-sm">Total Submissions</div>
     </div>
      <div class="text-center">
       <div class="text-3xl font-bold text-slate-600">{{ $overallAccuracy }}%</div>
