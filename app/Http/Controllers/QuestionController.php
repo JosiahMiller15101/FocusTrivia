@@ -19,11 +19,11 @@ class QuestionController extends Controller
             abort(404, 'No questions found.');
         }
         $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
-        $nowLocal = Carbon::now('America/Denver');
-        $hoursPassed = $startLocal->diffInHours($nowLocal);
-        $periods = (int) floor($hoursPassed / 12);
-        $count = Question::count();
-        $index = ($periods + 5) % $count;
+        $nowLocal   = Carbon::now('America/Denver');
+        $daysPassed = $startLocal->diffInDays($nowLocal);
+        $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
+        $periods = $daysPassed * 2 + $halfOfDay;
+        $index   = (($periods + 4) % $count); // 0-based index
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
