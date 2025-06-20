@@ -11,10 +11,11 @@
     
     <h3 class="text-lg font-semibold mb-2">Individual Player Rankings</h3>
     <ul class="list-disc pl-5 mb-4">
-      <li>Players are ranked based on their total score, which is calculated from the number of correct answers they provide. Every correct answer will increase a player's score by 10 points, while incorrect answers subtract 10 points</li>
+      <li>Players are ranked based on their total score, which is calculated from the number of correct answers they provide. Every correct answer will increase a player's score by 100 points, while incorrect answers subtract 100 points</li>
       <li>The total number of questions a player has answered is also considered, with a higher number of submissions boosting a player's rank.</li>
       <li>Two players with identical scores will have different rankings if one has answered 10 questions and the other has answered 1</li>
       <li>Consistency is the easiest way to boost your score</li>
+      <li>Players with the same score and same number of submissions will be automatically ranked by older account creation date</li>
       <li>Players can view their personal stats and compare them with others on the leaderboard.</li>
     </ul>
 

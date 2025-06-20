@@ -64,39 +64,7 @@
           @endphp
 
           @forelse($comments as $comment)
-            <div class="p-3 pb-12 bg-gray-100 rounded shadow relative">
-              <div class="text-sm text-gray-700 font-semibold mb-1 flex items-center justify-between">
-                <span>{{ $comment->user->first_name }} {{ $comment->user->last_name }}
-                  <span class="text-xs text-gray-500">&bull; {{ $comment->created_at->diffForHumans() }}</span>
-                </span>
-                @if(Auth::id() === $comment->user_id)
-                  <form method="POST" action="{{ route('question.comment.delete', $comment->id) }}" onsubmit="return confirm('Delete this comment?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="text-xs text-red-600 hover:underline ml-2">Delete</button>
-                  </form>
-                @endif
-              </div>
-              <div class="text-gray-900 mb-2">{{ $comment->comment }}</div>
-
-              <div class="absolute bottom-2 right-2">
-                <div class="flex items-center gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
-                  @foreach($reactionTypes as $type => $emoji)
-                    <button
-                      class="reaction-btn hover:-translate-y-1 cursor-pointer hover:scale-105 bg-white dark:bg-[#191818] rounded-full p-0.5 px-1 text-sm"
-                      data-comment-id="{{ $comment->id }}"
-                      data-type="{{ $type }}"
-                      type="button"
-                    >
-                      {{ $emoji }}
-                      <span class="text-[10px] ml-0.5 align-middle reaction-count" style="color: white; text-shadow: 0 0 2px #000;">
-                        {{ $comment->reactions->where('type', $type)->count() }}
-                      </span>
-                    </button>
-                  @endforeach
-                </div>
-              </div>
-            </div>
+            @include('comment', ['comment' => $comment])
           @empty
             <div class="text-gray-500">No comments yet. Be the first to comment!</div>
           @endforelse

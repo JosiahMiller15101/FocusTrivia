@@ -22,4 +22,14 @@ class QuestionComment extends Model
     {
         return $this->hasMany(CommentReaction::class, 'comment_id');
     }
+
+     public function parent()
+    {
+        return $this->belongsTo(QuestionComment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(QuestionComment::class, 'parent_id')->with('user', 'reactions', 'replies');
+    }
 }

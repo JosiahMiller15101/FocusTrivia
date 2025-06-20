@@ -23,7 +23,7 @@ class QuestionController extends Controller
         $daysPassed = $startLocal->diffInDays($nowLocal);
         $halfOfDay  = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
         $periods = $daysPassed * 2 + $halfOfDay;
-        $index   = (($periods + 4) % $count); // 0-based index
+        $index   = (($periods + 10) % $count); // 0-based index
         $question = Question::orderBy('id')->skip($index)->first();
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
@@ -36,8 +36,9 @@ class QuestionController extends Controller
 
         $comments = [];
         if ($alreadySubmitted) {
-            $comments = QuestionComment::with('user')
+            $comments = QuestionComment::with(['user', 'reactions', 'replies.user', 'replies.reactions', 'replies.replies'])
                 ->where('question_id', $question->id)
+                ->whereNull('parent_id')
                 ->latest()
                 ->get();
         }

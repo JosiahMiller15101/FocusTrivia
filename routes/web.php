@@ -85,3 +85,6 @@ Route::post('/question/submit', [App\Http\Controllers\QuestionSubmissionControll
  Route::get('/env-check', function () {
     dd(app()->environment());
 });
+
+//Notification bell
+Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
