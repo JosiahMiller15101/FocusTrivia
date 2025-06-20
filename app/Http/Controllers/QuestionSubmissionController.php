@@ -24,10 +24,6 @@ class QuestionSubmissionController extends Controller
             ->where('question_id', $question->id)
             ->exists();
 
-        if ($alreadySubmitted) {
-            return back()->with('error', 'You have already answered this question.');
-        }
-
         $isCorrect = trim(strtolower($request->answer)) === trim(strtolower($question->correct_answer));
 
         QuestionSubmission::create([

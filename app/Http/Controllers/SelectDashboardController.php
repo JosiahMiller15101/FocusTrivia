@@ -88,7 +88,8 @@ class SelectDashboardController extends Controller
         });
         $departmentPlayerRank = $departmentPlayerRank !== false ? $departmentPlayerRank + 1 : 'N/A';
 
-        $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->paginate(10);
+        $perPage = 3;
+        $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->paginate($perPage);
         $streak = app(DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [
             'user' => $user,

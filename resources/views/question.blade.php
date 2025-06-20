@@ -1,6 +1,7 @@
 @php
   use Carbon\Carbon;
 @endphp
+
 <x-layout>
   <x-slot:heading>
     Daily Question
