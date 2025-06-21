@@ -1,7 +1,7 @@
 <x-layout>
   <x-slot:heading>Notifications</x-slot:heading>
 
-  <div class="space-y-3 p-4">
+  <div class="space-y-3 p-4 bg-white ring-2 ring-gray-400 rounded shadow-lg">
     @forelse($notifications as $note)
       <div class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-2 ring-gray-400
             @if($note->type === 'reply') border-blue-500
