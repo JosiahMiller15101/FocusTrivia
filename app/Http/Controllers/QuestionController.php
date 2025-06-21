@@ -21,10 +21,10 @@ class QuestionController extends Controller
         $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
         $nowLocal   = Carbon::now('America/Denver');
         $daysPassed = $startLocal->diffInDays($nowLocal);
-        $halfOfDay = ($nowLocal->hour < 12) ? 1 : 0;
+        $halfOfDay = ($nowLocal->hour < 12) ? 0 : 1;
         // $halfOfDay  = (int) floor($nowLocal->hour / 12); // 2 before noon, 1 after --> //am=2, pm=1
         $periods = $daysPassed * 2 + $halfOfDay;  
-        $index   = (($periods + 10) % $count); // 0-based index
+        $index   = (($periods + 9) % $count); // 0-based index
         $question = Question::orderBy('id')->skip($index)->first();
 
         // as of 6/21/2025 (2:43 PM moutnain time) : 
