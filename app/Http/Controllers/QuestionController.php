@@ -24,7 +24,7 @@ class QuestionController extends Controller
         $halfOfDay = ($nowLocal->hour < 12) ? 0 : 1;
         // $halfOfDay  = (int) floor($nowLocal->hour / 12); // 2 before noon, 1 after --> //am=2, pm=1
         $periods = $daysPassed * 2 + $halfOfDay;  
-        $index   = (($periods + 9) % $count); // 0-based index
+        $index   = (($periods) % $count)-63; // 0-based index
         $question = Question::orderBy('id')->skip($index)->first();
 
         // as of 6/21/2025 (2:43 PM moutnain time) : 
@@ -56,6 +56,8 @@ class QuestionController extends Controller
             'answers' => $allAnswers,
             'alreadySubmitted' => $alreadySubmitted,
             'comments' => $comments,
+            'count' => $count,
+            'index' => $index,
         ]);
     }
 
