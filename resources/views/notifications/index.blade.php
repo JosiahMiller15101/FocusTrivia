@@ -42,4 +42,3 @@
     @endforelse
   </div>
 </x-layout>
-

@@ -23,7 +23,11 @@ class NotificationController extends Controller
         ->latest()
         ->paginate(20);
 
-    return view('notifications.index', compact('notifications'));
+    $unreadCount = Notification::where('user_id', $userId)
+    ->where('read', false)
+    ->count();
+
+    return view('notifications.index', compact('notifications', 'unreadCount'));
     }
 }
 

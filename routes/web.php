@@ -14,6 +14,7 @@ use App\Http\Controllers\SelectDepartmentDashboardController;
 use App\Http\Controllers\QuestionCommentController;
 use Carbon\Carbon;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 
 
 //home
@@ -80,11 +81,11 @@ Route::delete('/question/comment/{id}', [QuestionCommentController::class, 'dest
 Route::post('/profile/upload-image', [ProfileController::class, 'uploadImage'])->name('profile.uploadImage');
 
 // Add route for question answer submission (original style)
-Route::post('/question/submit', [App\Http\Controllers\QuestionSubmissionController::class, 'store']);
+Route::post('/question/submit', [QuestionSubmissionController::class, 'store']);
 
  Route::get('/env-check', function () {
     dd(app()->environment());
 });
 
 //Notification bell
-Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

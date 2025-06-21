@@ -7,9 +7,6 @@
     Daily Question
   </x-slot:heading>
 
-  <p>{{ $count }}</p>
-    <p>{{ $index }}</p>
-
 
   <div class="p-6 bg-white rounded-lg shadow ring-2 ring-gray-400">
     <p class="text-gray-600 text-sm mb-2">Category: {{ $question->category }}</p>

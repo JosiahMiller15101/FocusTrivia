@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +26,25 @@ class AppServiceProvider extends ServiceProvider
        if (app()->environment('production')) {
         \URL::forceScheme('https');
         }
+
+         View::composer('*', function ($view) {
+        if (Auth::check()) {
+            $userId = Auth::id();
+
+            // Pass unread count
+            $unreadCount = Notification::where('user_id', $userId)
+                ->where('read', false)
+                ->count();
+
+            // Pass recent notifications (limit to 10 or so for dropdown)
+            $notifications = Notification::with('comment.question')
+                ->where('user_id', $userId)
+                ->latest()
+                ->take(10)
+                ->get();
+
+            $view->with(compact('unreadCount', 'notifications'));
+        }
+    });
     }
 }
