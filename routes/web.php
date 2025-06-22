@@ -89,3 +89,13 @@ Route::post('/question/submit', [QuestionSubmissionController::class, 'store']);
 
 //Notification bell
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+
+Route::get('/check-time', function () {
+    return [
+        'app_timezone' => config('app.timezone'),
+        'php_timezone' => date_default_timezone_get(),
+        'now' => Carbon::now()->toDateTimeString(),
+    ];
+});
+

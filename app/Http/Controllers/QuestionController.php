@@ -18,21 +18,37 @@ class QuestionController extends Controller
         if ($count === 0) {
             abort(404, 'No questions found.');
         }
+        
         $startLocal = Carbon::create(2024, 1, 1, 0, 0, 0, 'America/Denver');
         $nowLocal   = Carbon::now('America/Denver');
-        $daysPassed = $startLocal->diffInDays($nowLocal);
-        $halfOfDay = ($nowLocal->hour < 12) ? 0 : 1;
-        // $halfOfDay  = (int) floor($nowLocal->hour / 12); // 2 before noon, 1 after --> //am=2, pm=1
-        $periods = $daysPassed * 2 + $halfOfDay;  
-        $index   = (($periods) % $count)-63; // 0-based index
-        $question = Question::orderBy('id')->skip($index)->first();
 
-        // as of 6/21/2025 (2:43 PM moutnain time) : 
+        // Force both to 00:00 before comparing
+        $daysPassed = $startLocal->copy()->startOfDay()->diffInDays($nowLocal->copy()->startOfDay());
+
+        $halfOfDay = ($nowLocal->hour < 12) ? 0 : 1;
+        $periods = $daysPassed * 2 + $halfOfDay;
+
+        $count = Question::count();
+        $index = ($periods - 64) % $count;
+
+        $question = Question::orderBy('id')->skip($index)->first();
+        // as of 6/21/2025 (2:43 PM mountain time) : 
         // days passed = 538.6070627353
         // periods = 1077.2141254706
         // half = 0
         // index = 16
         // count = 51
+
+    //   array:8 [▼ // app\Http\Controllers\QuestionController.php:34
+    //   "nowLocal" => "2025-06-22 15:34:42"
+    //   "startLocal" => "2024-01-01 00:00:00"
+    //   "daysPassed" => 538.0
+    //   "timezone" => "America/Denver"
+    //   "halfOfDay" => 1
+    //   "periods" => 1077.0
+    //   "index" => 14
+    //   "count" => 111
+    // ]
 
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
             ->where('question_id', $question->id)
@@ -56,8 +72,6 @@ class QuestionController extends Controller
             'answers' => $allAnswers,
             'alreadySubmitted' => $alreadySubmitted,
             'comments' => $comments,
-            'count' => $count,
-            'index' => $index,
         ]);
     }
 
