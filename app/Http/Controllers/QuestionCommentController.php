@@ -56,7 +56,7 @@ class QuestionCommentController extends Controller
         ->delete();
 
     // Add new reaction
-    \App\Models\CommentReaction::create([
+    $reaction = \App\Models\CommentReaction::create([
         'comment_id' => $commentId,
         'user_id' => $userId,
         'type' => $newType,
@@ -65,13 +65,25 @@ class QuestionCommentController extends Controller
     $comment = QuestionComment::find($commentId);
 
     if ($comment && $comment->user_id !== $userId) {
-        \App\Models\Notification::create([
+        // Prevent duplicate reaction notifications
+        $existing = \App\Models\Notification::where([
             'user_id' => $comment->user_id,
-            'comment_id' => $comment->id,  // associate notification with comment
+            'comment_id' => $comment->id,
             'type' => 'reaction',
-            'message' => Auth::user()->first_name . ' ' . Auth::user()->last_name . ' replied to your comment.',
-            'read' => false,
-        ]);
+            'reacting_user_id' => $userId,
+        ])->first();
+        if (!$existing) {
+            \App\Models\Notification::create([
+                'user_id' => $comment->user_id,
+                'comment_id' => $comment->id,  // associate notification with comment
+                'type' => 'reaction',
+                'reaction_type' => $reaction->type, // always use the actual reaction type
+                'message' => Auth::user()->first_name . ' ' . Auth::user()->last_name . ' reacted to your comment.',
+                'read' => false,
+                'reacting_user_id' => $userId,
+                'comment_reaction_id' => $reaction->id, // set the reaction id
+            ]);
+        }
     }
 
     // Return updated reaction counts

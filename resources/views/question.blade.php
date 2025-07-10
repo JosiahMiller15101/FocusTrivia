@@ -147,11 +147,20 @@
       const timerEl = document.getElementById('time-left');
       const form = document.getElementById('question-form');
       const progressBar = document.getElementById('timer-progress');
+      const submitButton = document.getElementById('submit-button');
 
       let timeLeft = 15;
       const totalTime = 15;
 
       if (!timerEl || !form || !progressBar) return;
+
+      // Disable submit button after first click
+      if (submitButton && form) {
+        form.addEventListener('submit', function(e) {
+          submitButton.disabled = true;
+          submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+        });
+      }
 
       const countdown = setInterval(() => {
         timeLeft--;
@@ -169,14 +178,5 @@
       }, 1000);
     });
   </script>
-
-  @if(session('submitted'))
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
-        document.getElementById('submit-button')?.setAttribute('disabled', 'true');
-      });
-    </script>
-  @endif
   @endsection
 </x-layout>

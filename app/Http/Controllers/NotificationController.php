@@ -21,7 +21,7 @@ class NotificationController extends Controller
     $notifications = Notification::with('comment.question')
         ->where('user_id', $userId)
         ->latest()
-        ->paginate(20);
+        ->paginate(10);
 
     $unreadCount = Notification::where('user_id', $userId)
     ->where('read', false)

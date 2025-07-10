@@ -6,18 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->foreignId('comment_id')->nullable()->constrained('question_comments')->onDelete('cascade')->after('user_id');
+            $table->unsignedBigInteger('reacting_user_id')->nullable()->after('user_id');
         });
+
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->dropForeign(['comment_id']);
-            $table->dropColumn('comment_id');
+            //
         });
     }
 };

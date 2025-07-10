@@ -24,6 +24,13 @@ class SessionController extends Controller
             ]);
         }
 
+        $remember = request()->has('remember');
+        if (!Auth::attempt($attributes, $remember)) {
+            throw ValidationException::withMessages([
+                'email' => 'Sorry, those credentials do not match.'
+            ]);
+        }
+
         request()->session()->regenerate(); //regenerate tokens for sign ins
 
         return redirect('/');

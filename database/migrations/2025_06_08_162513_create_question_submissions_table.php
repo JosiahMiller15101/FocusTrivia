@@ -17,6 +17,7 @@ return new class extends Migration
         $table->foreignId('question_id')->constrained()->onDelete('cascade');
         $table->timestamp('submitted_at');
         $table->timestamps();
+        $table->unique(['user_id', 'question_id']);
     });
 }
 

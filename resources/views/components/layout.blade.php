@@ -104,6 +104,11 @@
         <div class="flex-1">
           <p class="text-sm text-black">{{ $note->message }}</p>
           @if($note->comment && $note->comment->question)
+          @if($note->comment)
+              <p class="text-xs text-gray-700 mt-1 italic">
+                "{{ $note->comment->comment }}"
+              </p>
+            @endif
             <p class="text-xs text-blue-600 underline mt-1 italic">
               <a href="/question">
                 Question: {{ $note->comment->question->question }}

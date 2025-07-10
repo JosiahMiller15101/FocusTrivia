@@ -22,11 +22,17 @@
             <x-form-input name="password" id="password" type="password" required></x-form-input>
             <x-form-error name="password"></x-form-error>
           </div>
-        </x-form-field>
+          <div class="mt-4">
+            <label class="inline-flex items-center">
+                <input type="checkbox" name="remember" class="form-checkbox">
+                <span class="ml-2">Remember Me</span>
+            </label>
+        </div>
       </div>
+        </x-form-field>
     </div>
   </div>
-  <div class="mt-6 flex items-center justify-end gap-x-6">
+  <div class="mt-4 flex items-center justify-end gap-x-6">
     <a href="/" class="text-sm/6 font-semibold text-gray-900">Cancel</a>
     <x-form-button class="shadow-lg">Login</x-form-button>
   </div>
