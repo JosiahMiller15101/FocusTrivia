@@ -33,21 +33,14 @@
         <div class="flex-1">
           @if($note->type === 'reply')
             <p class="text-sm text-black">{{ $note->message }}</p>
+            <p class="text-xs text-gray-700 mt-1 italic">
+              "{{ optional(optional($note->comment)->replies)->first()->comment ?? ($note->comment->comment ?? '') }}"
+            </p>
           @elseif($note->type === 'reaction')
             <p class="text-sm text-black">{{ $note->message }}</p>
             <span>
-              [{{ $note->reaction_type }}]
-              {{ $emojiMap[$note->reaction_type] ?? 'NO EMOJI' }}
+              {{ $emojiMap[$note->reaction_type] ?? '' }}
             </span>
-          @endif
-          @if($note->comment && $note->comment->question)
-            @if($note->type === 'reply')
-              <p class="text-xs text-gray-700 mt-1 italic">
-                "{{ $note->comment->comment }}"
-              </p>
-            @elseif($note->type === 'reaction')
-              <p>{{ $emojiMap[$note->reaction_type] ?? '' }}</p>
-            @endif
           @endif
           <p class="text-xs text-blue-600 underline mt-1 italic">
             <a href="/question">
@@ -63,5 +56,6 @@
         No notifications yet.
       </div>
     @endforelse
+        {{ $notifications->links() }}
   </div>
 </x-layout>

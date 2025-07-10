@@ -38,7 +38,7 @@
               <x-nav-link href="/login" :active="request()->is('login')">Login</x-nav-link>
             @endguest
 
-            @auth
+@auth
             
 <!-- Notification Bell -->
 <div class="relative" x-data="{ open: false }" @keydown.escape.window="open = false">
@@ -70,6 +70,15 @@
   </button>
 
   <!-- Dropdown/Viewbox -->
+     @php
+    $emojiMap = [
+      'like' => '👍',
+      'crying' => '😢',
+      'dislike' => '👎',
+      'angry' => '😡',
+      'laughing' => '😂',
+    ];
+  @endphp
   <div
     x-show="open"
     x-transition
@@ -81,7 +90,7 @@
     <a href="/notifications" class="text-sm text-blue-600 underline absolute top-2 right-2">
       View All Notifications
       </a>
-    @foreach($notifications as $note)
+    @foreach($headerNotifications as $note)
       <div
         class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-2 ring-gray-400
           @if($note->type === 'reply') border-blue-500
@@ -105,10 +114,17 @@
           <p class="text-sm text-black">{{ $note->message }}</p>
           @if($note->comment && $note->comment->question)
           @if($note->comment)
+          @if($note->type =='reply')
               <p class="text-xs text-gray-700 mt-1 italic">
-                "{{ $note->comment->comment }}"
+                "{{ optional(optional($note->comment)->replies)->first()->comment ?? ($note->comment->comment ?? '')}}"
               </p>
             @endif
+            @endif
+          @if($note->type === 'reaction')
+           <span>
+              {{ $emojiMap[$note->reaction_type] ?? '' }}
+            </span>
+          @endif
             <p class="text-xs text-blue-600 underline mt-1 italic">
               <a href="/question">
                 Question: {{ $note->comment->question->question }}
@@ -120,7 +136,7 @@
       </div>
     @endforeach
 
-    @if($notifications->isEmpty())
+    @if($headerNotifications->isEmpty())
       <div class="p-6 bg-white dark:bg-gray-800 rounded shadow text-gray-500 text-center">
         No notifications yet.
       </div>
@@ -133,6 +149,16 @@
                   @csrf
                   <x-form-button>Logout</x-form-button>
                 </form>
+
+                @php
+                    $profileImage = Auth::user()->profile_image;
+                    $isAbsolute = $profileImage && (Str::startsWith($profileImage, ['http://', 'https://']) || Str::startsWith($profileImage, ['/']));
+                @endphp
+                @if($profileImage)
+                  <img src="{{ $profileImage }}" alt="Profile" class="w-11 h-11 rounded-full object-cover border border-gray-300 ml-6">
+                @else
+                  <span class="inline-block w-11 h-11 rounded-full bg-gray-300 ml-6"></span>
+                @endif
               @endauth
             </div>
           </div>

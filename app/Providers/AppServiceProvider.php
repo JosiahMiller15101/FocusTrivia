@@ -37,13 +37,13 @@ class AppServiceProvider extends ServiceProvider
                 ->count();
 
             // Pass recent notifications (limit to 10 or so for dropdown)
-            $notifications = Notification::with('comment.question')
+            $headerNotifications = Notification::with('comment.question')
                 ->where('user_id', $userId)
                 ->latest()
                 ->take(10)
                 ->get();
 
-            $view->with(compact('unreadCount', 'notifications'));
+            $view->with(compact('unreadCount', 'headerNotifications'));
         }
     });
     }

@@ -77,7 +77,7 @@ class QuestionCommentController extends Controller
                 'user_id' => $comment->user_id,
                 'comment_id' => $comment->id,  // associate notification with comment
                 'type' => 'reaction',
-                'reaction_type' => $reaction->type, // always use the actual reaction type
+                'reaction_type' => $newType, // use the submitted reaction type directly
                 'message' => Auth::user()->first_name . ' ' . Auth::user()->last_name . ' reacted to your comment.',
                 'read' => false,
                 'reacting_user_id' => $userId,
@@ -104,5 +104,14 @@ class QuestionCommentController extends Controller
         }
         $comment->delete();
         return back()->with('success', 'Comment deleted.');
+    }
+
+    public function index()
+    {
+        $notifications = \App\Models\Notification::where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // Show 10 notifications per page
+
+        return view('notifications.index', compact('notifications'));
     }
 }
