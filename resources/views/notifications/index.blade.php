@@ -41,6 +41,7 @@
             <span>
               {{ $emojiMap[$note->reaction_type] ?? '' }}
             </span>
+              <p class="text-xs text-gray-700 mt-1 italic">Comment: "{{ $note->comment->comment }}"</p>
           @endif
           <p class="text-xs text-blue-600 underline mt-1 italic">
             <a href="/question">
