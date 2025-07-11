@@ -99,12 +99,12 @@ Route::get('/check-time', function () {
     ];
 });
 
-//404
+//404 test
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
-//500
+//500 test
 Route::get('/test-500', function () {
-    throw new \Exception('This is a test 500 error!');
+    abort(500);
 });
