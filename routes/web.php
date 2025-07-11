@@ -99,6 +99,7 @@ Route::get('/check-time', function () {
     ];
 });
 
+//404
 Route::fallback(function () {
-    abort(404);
+    return response()->view('errors.404', [], 404);
 });
