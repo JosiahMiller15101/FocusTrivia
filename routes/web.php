@@ -103,3 +103,8 @@ Route::get('/check-time', function () {
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
+
+//500
+Route::get('/test-500', function () {
+    throw new \Exception('This is a test 500 error!');
+});
