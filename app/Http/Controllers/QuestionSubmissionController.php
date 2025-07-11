@@ -39,9 +39,7 @@ class QuestionSubmissionController extends Controller
             // Handle the case where the submission already exists
             if ($e->getCode() === '23000') { // Integrity constraint violation
                 return back()->with('error', 'You have already submitted an answer for this question.');
-            } else {
-                return back()->with('error', 'An error occurred while submitting your answer. Please try again later.');
-            }
+            } 
         }
         
         if ($isCorrect) {

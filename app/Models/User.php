@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\QuestionSubmission;
+use App\Models\Notification;
 
 class User extends Authenticatable
 {
@@ -64,6 +65,7 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->hasMany(\App\Models\Notification::class);
+        return $this->hasMany(Notification::class);
     }
+
 }
