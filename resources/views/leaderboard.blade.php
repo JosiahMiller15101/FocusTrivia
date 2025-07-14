@@ -146,7 +146,34 @@
                 {{ $loop->iteration }}
               @endif
             </td>
-            <td class="py-3 px-4 min-w-[180px]">
+            <td class="py-2 px-4 flex items-center gap-2 min-w-[120px]">
+              @if(strtolower(trim($dept['department'])) == 'accounting')
+                <img src="{{ asset('images/accounting.png') }}" alt="Accounting Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'donor communications')
+                <img src="{{ asset('images/donorcommunications.png') }}" alt="Donor Communications Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'events')
+                <img src="{{ asset('images/events.png') }}" alt="Events Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'it')
+                <img src="{{ asset('images/it.png') }}" alt="IT Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'hr')
+                <img src="{{ asset('images/hr.png') }}" alt="HR Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'summer projects')
+                <img src="{{ asset('images/summerprojects.png') }}" alt="Summer Projects Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'media operations')
+                <img src="{{ asset('images/mediaoperations.png') }}" alt="Media Operations Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'other')
+                <img src="{{ asset('images/other.png') }}" alt="Other Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
+              @if(strtolower(trim($dept['department'])) == 'marketing')
+                <img src="{{ asset('images/marketing.png') }}" alt="Marketing Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              @endif
               <span class="inline-block min-w-[180px]">
                 <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-45 align-middle">
                   {{ $dept['department'] }}@if(isset($dept['num_players'])) ({{ $dept['num_players'] }})@endif
