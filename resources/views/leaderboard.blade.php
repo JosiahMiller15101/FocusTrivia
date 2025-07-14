@@ -38,8 +38,8 @@
             $isSearchedUser = $searchedUserId && $user->id === $searchedUserId;
             if ($isSearchedUser) { $foundOnPage = true; }
           @endphp
-          <tr class="border-b text-gray-800 text-sm {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isCurrentUser) bg-yellow-100 @endif @if($isSearchedUser) ring-2 ring-blue-400 bg-blue-100 @endif hover:bg-gray-100 transition-colors duration-200">
-            <td class="py-2 px-4 whitespace-nowrap">
+          <tr class="border-b text-gray-800 text-[15px] {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isCurrentUser) bg-yellow-100 @endif @if($isSearchedUser) ring-2 ring-blue-400 bg-blue-100 @endif hover:bg-gray-100 transition-colors duration-200">
+            <td class="py-3 px-4 whitespace-nowrap">
               @if($rank === 1)
                 🥇
               @elseif($rank === 2)
@@ -57,11 +57,11 @@
                 @endif
               @endif
             </td>
-            <td class="py-2 px-4 flex items-center gap-2 min-w-[120px]">
+            <td class="py-3 px-4 flex items-center gap-2 min-w-[120px]">
               @if($user->profile_image)
-                <img src="{{ $user->profile_image }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                <img src="{{ $user->profile_image }}" alt="Profile" class="w-8 h-8 rounded-full object-cover border border-gray-300">
               @else
-                <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
+                <span class="inline-block w-8 h-8 rounded-full bg-gray-300"></span>
               @endif
               <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
                 <a href="{{ route('player.dashboard', ['user' => $user->id]) }}"
@@ -79,7 +79,7 @@
                 </span>
               </span>
             </td>
-            <td class="py-2 px-4 min-w-[160px]">
+            <td class="py-3 px-4 min-w-[160px]">
               <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
                 <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-40 align-middle">
                   {{ $user->department }}
@@ -89,8 +89,8 @@
                 </span>
               </span>
             </td>
-            <td class="py-2 px-4 whitespace-nowrap">{{ $user->display_score }}</td>
-            <td class="py-2 px-4 whitespace-nowrap">{{ $user->display_accuracy }}%</td>
+            <td class="py-3 px-4 whitespace-nowrap">{{ $user->display_score }}</td>
+            <td class="py-3 px-4 whitespace-nowrap">{{ $user->display_accuracy }}%</td>
           </tr>
         @endforeach
       </tbody>
@@ -134,7 +134,7 @@
             $deptName = isset($dept['department']) ? strtolower(trim(preg_replace('/\s*\(.*/', '', $dept['department']))) : '';
             $isUserDept = $userDept !== '' && $deptName !== '' && $userDept === $deptName;
           @endphp
-          <tr class="border-b text-gray-800 text-sm {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isUserDept) bg-yellow-100 @endif hover:bg-gray-100 transition-colors duration-200">
+          <tr class="border-b text-gray-800 text-[15px] {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isUserDept) bg-yellow-100 @endif hover:bg-gray-100 transition-colors duration-200">
             <td class="py-3 px-4 whitespace-nowrap">
               @if($loop->iteration === 1)
                 🥇
@@ -146,7 +146,7 @@
                 {{ $loop->iteration }}
               @endif
             </td>
-            <td class="py-2 px-4 flex items-center gap-2 min-w-[120px]">
+            <td class="py-3 px-4 flex items-center gap-2 min-w-[120px]">
               @if(strtolower(trim($dept['department'])) == 'accounting')
                 <img src="{{ asset('images/accounting.png') }}" alt="Accounting Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
@@ -157,7 +157,7 @@
                 <img src="{{ asset('images/events.png') }}" alt="Events Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
               @if(strtolower(trim($dept['department'])) == 'it')
-                <img src="{{ asset('images/IT.png') }}" alt="IT Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                <img src="{{ asset('images/it.png') }}" alt="IT Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
               @if(strtolower(trim($dept['department'])) == 'hr')
                 <img src="{{ asset('images/HR.png') }}" alt="HR Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
@@ -177,12 +177,12 @@
               <span class="inline-block min-w-[180px]">
                 <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-45 align-middle">
                   {{ $dept['department'] }}@if(isset($dept['num_players'])) ({{ $dept['num_players'] }})@endif
+                  @if($isUserDept)
+                    <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-semibold shadow-sm">
+                      Your Department
+                    </span>
+                  @endif
                 </a>
-                @if($isUserDept)
-                  <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-semibold shadow-sm">
-                    Your Department
-                  </span>
-                @endif
               </span>
             </td>
             <td class="py-3 px-4">{{ isset($dept['score_per_player']) ? number_format($dept['score_per_player'], 1) : 'N/A' }}</td>
@@ -226,8 +226,8 @@
         @php
           $isCurrentUser = Auth::check() && $user->id === Auth::id();
         @endphp
-        <tr class="border-b text-gray-800 text-sm {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isCurrentUser) bg-yellow-100 @endif hover:bg-gray-100 transition-colors duration-200">
-          <td class="py-2 px-4 whitespace-nowrap">
+        <tr class="border-b text-gray-800 text-[15px] {{ $index % 2 === 0 ? 'bg-gray-50' : 'bg-white' }} @if($isCurrentUser) bg-yellow-100 @endif hover:bg-gray-100 transition-colors duration-200">
+          <td class="py-3 px-4 whitespace-nowrap">
             @if($index + 1 === 1)
               🥇
             @elseif($index + 1 === 2)
@@ -238,11 +238,11 @@
               {{ $index + 1 }}
             @endif
           </td>
-          <td class="py-2 px-4 flex items-center gap-2 min-w-[120px]">
+          <td class="py-3 px-4 flex items-center gap-2 min-w-[120px]">
             @if($user->profile_image)
-              <img src="{{ $user->profile_image }}" alt="Profile" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+              <img src="{{ $user->profile_image }}" alt="Profile" class="w-8 h-8 rounded-full object-cover border border-gray-300">
             @else
-              <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
+              <span class="inline-block w-8 h-8 rounded-full bg-gray-300"></span>
             @endif
             <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
               <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold max-w-[160px] truncate block transition-all duration-150" style="display: block;">
@@ -256,8 +256,8 @@
               </span>
             </span>
           </td>
-          <td class="py-2 px-4 whitespace-nowrap">{{ $user->score * 10 }}</td>
-          <td class="py-2 px-4 whitespace-nowrap">{{ $user->accuracy }}%</td>
+          <td class="py-3 px-4 whitespace-nowrap">{{ $user->score * 10 }}</td>
+          <td class="py-3 px-4 whitespace-nowrap">{{ $user->accuracy }}%</td>
         </tr>
       @endforeach
     </tbody>
