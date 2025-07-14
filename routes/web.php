@@ -21,7 +21,7 @@ use App\Http\Controllers\NotificationController;
 Route::get('/', [HomeController::class, 'index']);
 
 //leaderboard
-Route::get('/leaderboard', [LeaderboardController::class, 'index']);
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
 
 //dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');

@@ -52,7 +52,7 @@
         <p class="text-2xl font-bold text-slate-700 mb-2">Oops! Page not found.</p>
         <p class="text-slate-600 mb-6">The page you're looking for doesn’t exist or was moved.</p>
         <p class="text-base mt-4 text-blue-900 italic bg-blue-100 rounded px-3 py-2">🧠 Fun Fact: {{ $randomFact }}</p>
-        <a href="/" class="mt-8 inline-block bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded shadow transition">← Back to Home</a>
+        <a href="/" class="mt-8 inline-block bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-6 rounded shadow transition">← Back to Home</a>
     </div>
 </body>
 </html>

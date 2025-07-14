@@ -62,7 +62,7 @@
             <p class="text-slate-600 mb-6">Please try again later.</p>
         @endif
         <p class="text-base mt-4 text-blue-900 italic bg-blue-100 rounded px-3 py-2">🧠 Fun Fact: {{ $randomFact }}</p>
-        <a href="/" class="mt-8 inline-block bg-slate-600 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded shadow transition">← Back to Home</a>
+        <a href="/" class="mt-8 inline-block bg-slate-600 hover:bg-slate-500 text-white font-semibold py-2 px-6 rounded shadow transition">← Back to Home</a>
     </div>
 </body>
 </html>

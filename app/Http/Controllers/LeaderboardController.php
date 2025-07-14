@@ -19,11 +19,13 @@ public function index()
     $halfOfDay = (int) floor($nowLocal->hour / 12); // 0 before noon, 1 after
     $currentRound = (int) ($daysPassed * 2 + $halfOfDay);
 
-    // Get all users (including Guests), calculate accuracy, and paginate manually
-    $users = User::with('submissions')
-        ->get();
+    $user = auth()->user();
+    $perPage = 10;
+    $page = request('page', 1);
+    $search = request('search');
 
-    // Prepare a display array to avoid dirtying Eloquent models
+    // Get all users (including Guests), calculate accuracy, and paginate manually
+    $users = User::with('submissions')->get();
     $displayUsers = collect();
     $sortedUsers = $users->map(function ($user) {
         $correct = $user->submissions->where('is_correct', true)->count();
@@ -51,25 +53,39 @@ public function index()
         $currentRank = $i + 1;
         $displayUser->current_rank = $currentRank;
         $displayUser->rank_movement = null;
-        $user = $users->firstWhere('id', $displayUser->id);
-        $previousRank = isset($user->previous_rank) && $user->previous_rank !== null ? $user->previous_rank : (count($sortedUsers) + 1);
+        $userModel = $users->firstWhere('id', $displayUser->id);
+        $previousRank = isset($userModel->previous_rank) && $userModel->previous_rank !== null ? $userModel->previous_rank : (count($sortedUsers) + 1);
         if ($previousRank > $currentRank) {
             $displayUser->rank_movement = 'up';
         } elseif ($previousRank < $currentRank) {
             $displayUser->rank_movement = 'down';
         }
         // Only update previous_rank and last_rank_update_round if a new round has started
-        if ($user->last_rank_update_round !== $currentRound) {
-            $user->update([
+        if ($userModel->last_rank_update_round !== $currentRound) {
+            $userModel->update([
                 'previous_rank' => $currentRank,
                 'last_rank_update_round' => $currentRound
             ]);
         }
     }
 
-    // Manual pagination for the users collection
-    $perPage = 10;
-    $page = request('page', 1);
+    // Handle search
+    $searchedUser = null;
+    $searchedUserPage = null;
+    if ($search) {
+        $searchedUser = $sortedUsers->first(function ($u) use ($search) {
+            $fullName = strtolower(trim($u->first_name . ' ' . $u->last_name));
+            return strpos($fullName, strtolower(trim($search))) !== false;
+        });
+        if ($searchedUser) {
+            $searchedUserIndex = $sortedUsers->search(fn($u) => $u->id === $searchedUser->id);
+            $searchedUserPage = $searchedUserIndex !== false ? (int)floor($searchedUserIndex / $perPage) + 1 : null;
+            if (request('page') != $searchedUserPage) {
+                return redirect()->route('leaderboard', ['page' => $searchedUserPage, 'search' => $search]);
+            }
+        }
+    }
+
     $paginatedUsers = new LengthAwarePaginator(
         $sortedUsers->forPage($page, $perPage)->values(),
         $sortedUsers->count(),
@@ -79,7 +95,7 @@ public function index()
     );
 
     // Leaderboard for top departments by score per player (including 'guest')
-    $departments = Cache::remember('top_departments', now()->addMinutes(1), function () use ($sortedUsers) {
+    $departments = \Cache::remember('top_departments', now()->addMinutes(1), function () use ($sortedUsers) {
         return $sortedUsers
             ->groupBy('department')
             ->map(function ($users, $dept) {
@@ -102,9 +118,18 @@ public function index()
             ->values();
     });
 
+    $currentUserId = $user ? $user->id : null;
+    $searchedUserId = $searchedUser ? $searchedUser->id : null;
+
     return view('leaderboard', [
         'users' => $paginatedUsers,
         'departments' => $departments,
+        'page' => $page,
+        'perPage' => $perPage,
+        'total' => $sortedUsers->count(),
+        'currentUserId' => $currentUserId,
+        'searchedUserId' => $searchedUserId,
+        'search' => $search,
     ]);
 }
 

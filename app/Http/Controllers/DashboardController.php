@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $stats = $this->getUserStats($user->id);
-        $allUsers = $this->getRankedUsers();
+        $allUsers = $this->getRankedUsers(false); // Pass false to include guests
         $playerRank = $this->getPlayerRank($allUsers, $user->id);
         $departments = $this->getRankedDepartments($allUsers);
         $departmentRank = $this->getDepartmentRank($departments, $user->department);
@@ -89,11 +89,13 @@ class DashboardController extends Controller
         ];
     }
 
-    private function getRankedUsers()
+    private function getRankedUsers($excludeGuests = true)
     {
         return User::with('submissions')
             ->get()
-            ->filter(fn($u) => strtolower(trim($u->department)) !== 'guest')
+            ->filter(function($u) use ($excludeGuests) {
+                return $excludeGuests ? strtolower(trim($u->department)) !== 'guest' : true;
+            })
             ->map(function ($u) {
                 $correct = $u->submissions->where('is_correct', true)->count();
                 $total = $u->submissions->count();
