@@ -157,10 +157,10 @@
                 <img src="{{ asset('images/events.png') }}" alt="Events Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
               @if(strtolower(trim($dept['department'])) == 'it')
-                <img src="{{ asset('images/it.png') }}" alt="IT Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                <img src="{{ asset('images/IT.png') }}" alt="IT Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
               @if(strtolower(trim($dept['department'])) == 'hr')
-                <img src="{{ asset('images/hr.png') }}" alt="HR Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
+                <img src="{{ asset('images/HR.png') }}" alt="HR Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
               @endif
               @if(strtolower(trim($dept['department'])) == 'summer projects')
                 <img src="{{ asset('images/summerprojects.png') }}" alt="Summer Projects Department" class="w-7 h-7 rounded-full object-cover border border-gray-300">
