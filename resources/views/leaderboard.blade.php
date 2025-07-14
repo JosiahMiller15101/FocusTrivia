@@ -63,20 +63,31 @@
               @else
                 <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
               @endif
-              <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold transition-all duration-150">
-                {{ $user->first_name }} {{ $user->last_name }}
-                @if($isCurrentUser)
-                  <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-bold">You</span>
-                @endif
-                @if($isSearchedUser)
-                  <span class="ml-2 px-2 py-0.5 rounded bg-blue-300 text-xs text-blue-900 font-bold">Searched</span>
-                @endif
-              </a>
+              <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
+                <a href="{{ route('player.dashboard', ['user' => $user->id]) }}"
+                   class="underline hover:font-bold transition-all duration-150 block truncate w-40 align-middle">
+                  {{ $user->first_name }} {{ $user->last_name }}
+                  @if(isset($isCurrentUser) && $isCurrentUser)
+                    <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-bold">You</span>
+                  @endif
+                  @if(isset($isSearchedUser) && $isSearchedUser)
+                    <span class="ml-2 px-2 py-0.5 rounded bg-blue-300 text-xs text-blue-900 font-bold">Searched</span>
+                  @endif
+                </a>
+                <span class="font-bold opacity-0 pointer-events-none select-none absolute left-0 top-0 w-40 truncate h-full" aria-hidden="true">
+                  {{ $user->first_name }} {{ $user->last_name }}
+                </span>
+              </span>
             </td>
             <td class="py-2 px-4 min-w-[160px]">
-              <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150">
-                {{ $user->department }}
-              </a>
+              <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
+                <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-40 align-middle">
+                  {{ $user->department }}
+                </a>
+                <span class="font-bold opacity-0 pointer-events-none select-none absolute left-0 top-0 w-40 truncate h-full" aria-hidden="true">
+                  {{ $user->department }}
+                </span>
+              </span>
             </td>
             <td class="py-2 px-4 whitespace-nowrap">{{ $user->display_score }}</td>
             <td class="py-2 px-4 whitespace-nowrap">{{ $user->display_accuracy }}%</td>
@@ -135,14 +146,11 @@
                 {{ $loop->iteration }}
               @endif
             </td>
-            <td class="py-3 px-4">
+            <td class="py-3 px-4 min-w-[180px]">
               <span class="inline-block min-w-[180px]">
-                <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:text-blue-600 transition-colors duration-200">
-                  {{ $dept['department'] }}
+                <a href="{{ route('department.dashboard', ['department' => $dept['department']]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-45 align-middle">
+                  {{ $dept['department'] }}@if(isset($dept['num_players'])) ({{ $dept['num_players'] }})@endif
                 </a>
-                @if(isset($dept['num_players']))
-                  ({{ $dept['num_players'] }})
-                @endif
                 @if($isUserDept)
                   <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-semibold shadow-sm">
                     Your Department
@@ -209,12 +217,17 @@
             @else
               <span class="inline-block w-7 h-7 rounded-full bg-gray-300"></span>
             @endif
-            <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold transition-all duration-150">
-              {{ $user->first_name }} {{ $user->last_name }}
-              @if($isCurrentUser)
-                <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-bold">You</span>
-              @endif
-            </a>
+            <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
+              <a href="{{ route('player.dashboard', ['user' => $user->id]) }}" class="underline hover:font-bold max-w-[160px] truncate block transition-all duration-150" style="display: block;">
+                {{ $user->first_name }} {{ $user->last_name }}
+                @if($isCurrentUser)
+                  <span class="ml-2 px-2 py-0.5 rounded bg-yellow-300 text-xs text-gray-800 font-bold">You</span>
+                @endif
+              </a>
+              <span class="font-bold opacity-0 pointer-events-none select-none absolute left-0 top-0 w-40 truncate h-full" aria-hidden="true">
+                {{ $user->first_name }} {{ $user->last_name }}
+              </span>
+            </span>
           </td>
           <td class="py-2 px-4 whitespace-nowrap">{{ $user->score * 10 }}</td>
           <td class="py-2 px-4 whitespace-nowrap">{{ $user->accuracy }}%</td>
