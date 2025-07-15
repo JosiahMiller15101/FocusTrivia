@@ -44,7 +44,7 @@
     
     @if($alreadySubmitted)
       <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-        <p>You left the page or question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
+        <p>Question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
         <p>Time until next question: <strong>{{ $timeUntilNext }}</strong></p>
       </div>
 
@@ -105,7 +105,7 @@
               @if($isCorrect) border-green-500 bg-green-50
               @elseif($isIncorrect) border-red-500 bg-red-50
               @endif">
-              <input type="radio" id="option-{{ $loop->index }}" name="answer" value="{{ $answer }}" class="form-radio text-slate-600" required>
+              <input type="radio" id="option-{{ $loop->index }}" name="answer" value="{{ $answer }}" class="form-radio text-slate-600">
               <label for="option-{{ $loop->index }}" class="flex-1 cursor-pointer">{{ $answer }}</label>
             </div>
           @endforeach
@@ -148,17 +148,24 @@
       const form = document.getElementById('question-form');
       const progressBar = document.getElementById('timer-progress');
       const submitButton = document.getElementById('submit-button');
-
       let timeLeft = 15;
       const totalTime = 15;
+      let formSubmitted = false;
 
       if (!timerEl || !form || !progressBar) return;
 
       // Disable submit button after first click
       if (submitButton && form) {
         form.addEventListener('submit', function(e) {
+          // Prevent submit if no answer selected
+          if (!form.querySelector('input[name="answer"]:checked')) {
+            e.preventDefault();
+            alert('Please select an answer before submitting.');
+            return;
+          }
           submitButton.disabled = true;
           submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+          formSubmitted = true;
         });
       }
 
@@ -171,8 +178,23 @@
 
         if (timeLeft <= 0) {
           clearInterval(countdown);
-          if (!form.classList.contains('submitted')) {
-            form.submit();
+          if (!formSubmitted && !form.querySelector('input[name="answer"]:checked')) {
+            // Only abandon if not submitted and no answer selected
+            fetch("{{ route('question.abandon') }}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+              },
+              body: new URLSearchParams({
+                question_id: '{{ $question->id }}',
+                _token: '{{ csrf_token() }}'
+              })
+            }).then(() => {
+              // Optionally show a message or disable form
+              form.querySelectorAll('input, button, textarea').forEach(el => el.disabled = true);
+            });
           }
         }
       }, 1000);
@@ -182,7 +204,8 @@
   <script>
   let formDisabled = false;
   window.addEventListener('beforeunload', function (e) {
-      if (!formDisabled) {
+      const form = document.getElementById('question-form');
+      if (!formDisabled && form && !form.classList.contains('submitted') && !form.querySelector('input[name="answer"]:checked')) {
           navigator.sendBeacon(
               '{{ route('question.abandon') }}',
               new URLSearchParams({
@@ -190,7 +213,6 @@
                   _token: '{{ csrf_token() }}'
               })
           );
-          // Optionally, disable the form here
           document.querySelectorAll('form input, form button, form textarea').forEach(el => el.disabled = true);
           formDisabled = true;
       }
