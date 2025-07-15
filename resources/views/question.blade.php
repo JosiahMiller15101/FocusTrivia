@@ -44,7 +44,7 @@
     
     @if($alreadySubmitted)
       <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-        <p>You left the page or the question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
+        <p>You left the page or question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
         <p>Time until next question: <strong>{{ $timeUntilNext }}</strong></p>
       </div>
 

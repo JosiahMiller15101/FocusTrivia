@@ -57,7 +57,7 @@ class QuestionSubmissionController extends Controller
             return response()->json(['error' => 'Invalid request'], 400);
         }
 
-        // Only create if not already submitted
+        // Only create if not already submitted or abandoned
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
             ->where('question_id', $questionId)
             ->exists();
@@ -68,7 +68,7 @@ class QuestionSubmissionController extends Controller
                 'question_id' => $questionId,
                 'submitted_at' => now(),
                 'is_correct' => false,
-                'answer' => '',
+                'answer' => null, // Use null for abandoned answers
             ]);
         }
 
