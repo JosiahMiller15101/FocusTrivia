@@ -77,5 +77,19 @@ document.querySelectorAll('.reaction-btn').forEach(btn => {
     });
   });
 });
+
+// Prevent duplicate comment/reply submissions
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('form').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+      const btn = form.querySelector('button[type="submit"], button:not([type])');
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.textContent = 'Posting...';
+      }
+    });
+  });
+});
 </script>
 @endsection

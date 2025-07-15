@@ -83,7 +83,15 @@
       </div>
       <div class="bg-white rounded-lg shadow-lg p-6 mt-2 ring-2 ring-gray-400">
         <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
-        @if($history && count($history))
+          @if(!$history->count() && !$hasAnsweredCurrentWindow)
+            <div class="bg-gray-100 rounded-lg shadow-inner p-6 mt-2 flex items-center justify-center h-[300px] ring-2 ring-gray-400">
+              <div class="text-center text-gray-500">
+                <div class="text-4xl mb-2">🔒</div>
+                <h3 class="text-lg font-semibold">Recent Activity</h3>
+                <p class="text-sm mt-1">Answer today’s question to unlock this section.</p>
+              </div>
+            </div>
+          @else
           <div class="flex flex-col gap-4">
             @foreach($history as $submission)
               @php
@@ -127,8 +135,6 @@
               </div>
             @endforeach
           </div>
-        @else
-          <div class="text-gray-500">No recent activity yet.</div>
         @endif
          <div class="mt-4 flex justify-end flex-col space-y-2">
       {{ $history->links() }}

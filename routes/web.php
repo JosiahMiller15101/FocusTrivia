@@ -108,3 +108,6 @@ Route::fallback(function () {
 Route::get('/test-500', function () {
     abort(500);
 });
+
+// Abandon question submission
+Route::post('/question/abandon', [QuestionSubmissionController::class, 'abandon'])->name('question.abandon');

@@ -81,12 +81,16 @@
             </td>
             <td class="py-3 px-4 min-w-[160px]">
               <span class="relative w-40 block truncate align-middle" style="display: inline-block; vertical-align: middle;">
-                <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-40 align-middle">
+                @if(strtolower(trim($user->department)) == 'guest')
                   {{ $user->department }}
-                </a>
-                <span class="font-bold opacity-0 pointer-events-none select-none absolute left-0 top-0 w-40 truncate h-full" aria-hidden="true">
-                  {{ $user->department }}
-                </span>
+                @else
+                  <a href="{{ route('department.dashboard', ['department' => $user->department]) }}" class="underline hover:font-bold transition-all duration-150 block truncate w-40 align-middle">
+                    {{ $user->department }}
+                  </a>
+                  <span class="font-bold opacity-0 pointer-events-none select-none absolute left-0 top-0 w-40 truncate h-full" aria-hidden="true">
+                    {{ $user->department }}
+                  </span>
+                @endif
               </span>
             </td>
             <td class="py-3 px-4 whitespace-nowrap">{{ $user->display_score }}</td>

@@ -44,7 +44,7 @@
     
     @if($alreadySubmitted)
       <div class="p-4 bg-yellow-100 text-yellow-800 rounded">
-        <p>Question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
+        <p>You left the page or the question has been answered. Questions reset at 12AM and 12PM, see you then!</p>
         <p>Time until next question: <strong>{{ $timeUntilNext }}</strong></p>
       </div>
 
@@ -177,6 +177,24 @@
         }
       }, 1000);
     });
+  </script>
+
+  <script>
+  let formDisabled = false;
+  window.addEventListener('beforeunload', function (e) {
+      if (!formDisabled) {
+          navigator.sendBeacon(
+              '{{ route('question.abandon') }}',
+              new URLSearchParams({
+                  question_id: '{{ $question->id }}',
+                  _token: '{{ csrf_token() }}'
+              })
+          );
+          // Optionally, disable the form here
+          document.querySelectorAll('form input, form button, form textarea').forEach(el => el.disabled = true);
+          formDisabled = true;
+      }
+  });
   </script>
   @endsection
 </x-layout>

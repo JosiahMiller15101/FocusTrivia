@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\QuestionSubmission;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class SelectDashboardController extends Controller
 {
@@ -89,7 +92,45 @@ class SelectDashboardController extends Controller
         $departmentPlayerRank = $departmentPlayerRank !== false ? $departmentPlayerRank + 1 : 'N/A';
 
         $perPage = 3;
-        $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->paginate($perPage);
+        // $history = $user->submissions()->with('question')->orderByDesc('submitted_at')->paginate($perPage);
+       $authUser = Auth::user();
+
+// Check if user answered today's question
+$now = Carbon::now();
+
+// Determine the start of the current question window
+$currentWindowStart = $now->copy()->hour < 12
+    ? $now->copy()->startOfDay()       // 12am window
+    : $now->copy()->setTime(12, 0, 0); // 12pm window
+
+// Check if user has submitted during this window
+$hasAnsweredCurrentWindow = QuestionSubmission::where('user_id', $authUser->id)
+    ->where('submitted_at', '>=', $currentWindowStart)
+    ->exists();
+
+// Paginate submissions (all)
+$paginated = $user->submissions()
+    ->with('question')
+    ->orderByDesc('submitted_at')
+    ->paginate(4); // Don't change this perPage logic
+
+// Show submissions only if current user is owner or has answered in the current window
+$displayed = $paginated->map(function ($submission) use ($authUser, $hasAnsweredCurrentWindow) {
+    if ($authUser->id === $submission->user_id || $hasAnsweredCurrentWindow) {
+        return $submission;
+    }
+    return null;
+});
+
+// You need to preserve the total and current pagination state
+$history = new \Illuminate\Pagination\LengthAwarePaginator(
+    $displayed->filter()->values(), // Filter nulls from map
+    $paginated->total(),            // Keep original total
+    $paginated->perPage(),
+    $paginated->currentPage(),
+    ['path' => request()->url(), 'query' => request()->query()]
+);
+
         $streak = app(DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [
             'user' => $user,
@@ -101,6 +142,7 @@ class SelectDashboardController extends Controller
             'departmentPlayerRank' => $departmentPlayerRank,
             'history' => $history,
             'streak' => $streak,
+            'hasAnsweredCurrentWindow' => $hasAnsweredCurrentWindow,
         ]);
     }
 }
