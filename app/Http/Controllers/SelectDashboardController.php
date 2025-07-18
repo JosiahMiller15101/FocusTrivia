@@ -110,28 +110,17 @@ $hasAnsweredCurrentWindow = QuestionSubmission::where('user_id', $authUser->id)
     ->where('submitted_at', '>=', $currentWindowStart)
     ->exists();
 
-// Paginate submissions (all)
-$paginated = $user->submissions()
-    ->with('question')
-    ->orderByDesc('submitted_at')
-    ->paginate(4); // Don't change this perPage logic
 
-// Show submissions only if current user is owner or has answered in the current window
-$displayed = $paginated->map(function ($submission) use ($authUser, $hasAnsweredCurrentWindow) {
-    if ($authUser->id === $submission->user_id || $hasAnsweredCurrentWindow) {
-        return $submission;
-    }
-    return null;
-});
-
-// You need to preserve the total and current pagination state
-$history = new \Illuminate\Pagination\LengthAwarePaginator(
-    $displayed->filter()->values(), // Filter nulls from map
-    $paginated->total(),            // Keep original total
-    $paginated->perPage(),
-    $paginated->currentPage(),
-    ['path' => request()->url(), 'query' => request()->query()]
-);
+// Only show submissions if current user is owner or has answered in the current window
+if ($authUser->id === $user->id || $hasAnsweredCurrentWindow) {
+    $history = $user->submissions()
+        ->with('question')
+        ->orderByDesc('submitted_at')
+        ->simplePaginate(4);
+} else {
+    // Return an empty paginator so Blade can always safely use paginator methods and loops
+    $history = new \Illuminate\Pagination\Paginator(collect([]), 4);
+}
 
         $streak = app(DashboardController::class)->calculateStreak($user->id);
         return view('dashboard', [

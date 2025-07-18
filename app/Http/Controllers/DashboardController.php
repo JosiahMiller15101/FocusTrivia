@@ -143,7 +143,7 @@ class DashboardController extends Controller
         return QuestionSubmission::with('question')
             ->where('user_id', $userId)
             ->orderByDesc('submitted_at')
-            ->paginate(4);
+            ->simplePaginate(4);
     }
 
     public function calculateStreak($userId)
