@@ -23,11 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-       if (app()->environment('production')) {
-        \URL::forceScheme('https');
-        }
+    //    if (app()->environment('production')) {
+    //     \URL::forceScheme('https');
+    //     }
 
-         View::composer('*', function ($view) {
+    // Only inject notification dropdown data into the layout component
+    View::composer('components.layout', function ($view) {
         if (Auth::check()) {
             $userId = Auth::id();
 

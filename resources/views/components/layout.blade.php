@@ -126,11 +126,13 @@
             </span>
               <p class="text-xs text-gray-700 mt-1 italic">Comment: "{{ $note->comment->comment }}"</p>
           @endif
+          @if($note->comment && $note->comment->question && ($note->type == 'reply' || $note->type === 'reaction'))
             <p class="text-xs text-blue-600 underline mt-1 italic">
               <a href="/question">
                 Question: {{ $note->comment->question->question }}
               </a>
             </p>
+            @endif
           @endif
           <p class="text-xs text-gray-600 mt-1">{{ $note->created_at->diffForHumans() }}</p>
         </div>
@@ -144,7 +146,27 @@
     @endif
   </div>
 </div>
-
+<script>
+function loadNotifications() {
+  fetch('/api/notifications')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('notification-list');
+      if (!data.length) {
+        container.innerHTML = '<div class="text-center text-gray-500">No notifications yet.</div>';
+      } else {
+        container.innerHTML = data.map(note => `
+          <div class=\"p-4 border-b\">
+            <div>
+              ${note.message}
+              <!-- Add more fields as needed -->
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+}
+</script>
                 <!-- Logout Button -->
                 <form method="POST" action="/logout" class="ml-2">
                   @csrf

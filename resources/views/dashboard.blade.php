@@ -1,3 +1,6 @@
+@php
+  use App\Models\ProfileComments;
+@endphp
 <x-layout>
   <x-slot name="heading">
     @php
@@ -45,12 +48,48 @@
             </div>
             <div>
               <div class="text-xs text-gray-500 uppercase tracking-wider">Rank</div>
-              <div class="font-semibold text-gray-800">#{{ $playerRank ?? 'N/A' }}</div>
+              <div class="font-semibold text-gray-800">#{{ isset($playerRank) ? $playerRank : 'N/A' }}</div>
               <div class="mt-4 text-xs text-gray-500 uppercase tracking-wider">Streak</div>
               <div class="font-semibold text-gray-900">{{ $streak ?? 0 }} days</div>
             </div>
           </div>
           <div class="w-7/8 border-t border-gray-300 mt-4 mx-auto"></div>
+            <?php $recentComments = ProfileComments::with('author')->where('user_id', $dashboardUser->id)->latest()->take(2)->get(); ?>
+            <div class="mt-2 space-y-3 p-4 bg-white rounded mb-2">
+              <h3 class="text-lg font-semibold mb-2">Profile Posts - <a href="{{ route('profile.comments', ['user' => $dashboardUser->id]) }}" class="text-xs text-blue-600 underline">View All Profile Posts</a></h3>
+              @forelse($recentComments as $comment)
+                <div class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-1 ring-gray-400 border-gray-400 rounded hover:shadow-md transition-all">
+                  {{-- Author profile image --}}
+                  <div>
+                    @php
+                      $profileImage = $comment->author->profile_image ?? null;
+                      $isAbsolute = $profileImage && Str::startsWith($profileImage, ['http://', 'https://']);
+                    @endphp
+                    @if($profileImage)
+                      <img src="{{ $isAbsolute ? $profileImage : asset('storage/' . $profileImage) }}" alt="Profile" class="w-12 h-12 rounded-full object-cover">
+                    @else
+                      <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-xl text-gray-400">
+                        <svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z' /></svg>
+                      </div>
+                    @endif
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold text-gray-800">{{ $comment->author->first_name }} {{ $comment->author->last_name }}</div>
+                    <p class="text-sm text-black mt-1">{{ $comment->comment }}</p>
+                    <p class="text-xs text-gray-600 mt-1">{{ $comment->created_at->diffForHumans() }}</p>
+                  </div>
+                </div>
+              @empty
+                <div class="p-6 bg-white rounded shadow text-gray-500 text-center">
+                  No profile posts yet.
+                </div>
+              @endforelse
+            </div>
+              @csrf
+            <form>
+                <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Post a comment..." required></textarea>
+                <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
+              </form>
         </div>
       </div>
     </div>
@@ -81,7 +120,7 @@
           :description="'You have answered ' . ($correctAnswers ?? 0) . ' out of ' . ($totalAnswered ?? 0) . ' questions correctly.'"
         />
       </div>
-      <div class="bg-white rounded-lg shadow-lg p-6 mt-2 ring-2 ring-gray-400">
+      <div class="bg-white rounded-lg shadow-lg p-8 min-h-[410px] mt-2 ring-2 ring-gray-400">
         <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
           @if(!$history->count() && !$hasAnsweredCurrentWindow)
             <div class="bg-gray-100 rounded-lg shadow-inner p-6 mt-2 flex items-center justify-center h-[300px] ring-2 ring-gray-400">
@@ -172,14 +211,9 @@
             </div>
             <div class="mb-6 flex items-center gap-x-2">
                 <label class="block text-sm font-medium text-gray-700 min-w-[110px]">Department</label>
-                @if(strtolower(trim(Auth::user()->department)) === 'guest')
-                  <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
-                         class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg bg-gray-100 text-gray-400 cursor-not-allowed" disabled id="department_input">
-                @else
-                  <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
-                         class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg focus:ring-indigo-500 focus:border-indigo-500" disabled id="department_input">
-                  <button type="button" class="shadow-lg ml-2 px-2 py-1 bg-slate-600 text-white rounded edit-btn hover:bg-slate-500" data-target="department_input">Edit</button>
-                @endif
+                <input type="text" name="department" value="{{ old('department', Auth::user()->department) }}"
+                       class="mt-1 block flex-1 rounded-md border-gray-300 shadow-lg focus:ring-indigo-500 focus:border-indigo-500" disabled id="department_input">
+                <button type="button" class="shadow-lg ml-2 px-2 py-1 bg-slate-600 text-white rounded edit-btn hover:bg-slate-500" data-target="department_input">Edit</button>
             </div>
             <button type="submit" class="shadow-lg px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">
                 Save Changes

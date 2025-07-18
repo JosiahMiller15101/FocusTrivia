@@ -21,10 +21,11 @@ class SelectDashboardController extends Controller
         $score = ($correctAnswers * 100) - ($wrongAnswers * 100);
         $correctPercentage = $totalAnswered > 0 ? round(($correctAnswers / $totalAnswered) * 100, 1) : 0;
 
-        // Calculate player rank (excluding guests)
-        $allUsers = User::with('submissions')->get()->filter(function ($u) {
-            return strtolower(trim($u->department)) !== 'guest';
-        })->map(function ($u) {
+        // Calculate player rank (including guests)
+        $allUsers = User::select('id', 'first_name', 'last_name', 'department')
+            ->with(['submissions' => function($q) {
+                $q->select('id', 'user_id', 'is_correct');
+            }])->get()->map(function ($u) {
             $correct = $u->submissions->where('is_correct', true)->count();
             $total = $u->submissions->count();
             $wrong = $total - $correct;
@@ -67,11 +68,12 @@ class SelectDashboardController extends Controller
 
         // Calculate department player rank for the selected user (including guests)
         $department = strtolower(trim($user->department));
-        $departmentUsers = User::with('submissions')
-            ->get()
-            ->filter(function ($u) use ($department) {
-                return strtolower(trim($u->department)) === $department;
-            });
+        // Only load users in the same department
+        $departmentUsers = User::select('id', 'first_name', 'last_name', 'department')
+            ->whereRaw('LOWER(TRIM(department)) = ?', [$department])
+            ->with(['submissions' => function($q) {
+                $q->select('id', 'user_id', 'is_correct');
+            }])->get();
         $departmentPlayers = $departmentUsers->map(function ($u) {
             $total = $u->submissions->count();
             $correct = $u->submissions->where('is_correct', true)->count();

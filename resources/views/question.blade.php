@@ -109,7 +109,6 @@
               <label for="option-{{ $loop->index }}" class="flex-1 cursor-pointer">{{ $answer }}</label>
             </div>
           @endforeach
-
           <button id="submit-button" type="submit" class="w-full bg-slate-600 text-white py-2 rounded mt-4 hover:bg-slate-500 transition-colors">Submit Answer</button>
         </form>
       </div>

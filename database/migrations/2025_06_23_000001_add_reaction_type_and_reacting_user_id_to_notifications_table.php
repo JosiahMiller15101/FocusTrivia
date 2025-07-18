@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->string('reaction_type')->nullable()->after('comment_id');
-            $table->unsignedBigInteger('reacting_user_id')->nullable()->after('reaction_type');
+            // $table->string('reaction_type')->nullable()->after('comment_id');
+            // $table->unsignedBigInteger('reacting_user_id')->nullable()->after('reaction_type');
         });
     }
 

@@ -17,7 +17,7 @@
 
     <div class="absolute bottom-2 right-2">
         <div class="flex items-center gap-1 p-1 rounded-full bg-[#e8e4df] dark:bg-[#191818] w-auto text-base shadow mt-1">
-            @php $reactionTypes = ['like' => '👍', 'crying' => '😢', 'dislike' => '👎', 'angry' => '😡', 'laughing' => '😂']; @endphp
+            @php $reactionTypes = ['like' => '👍', 'dislike' => '👎', 'crying' => '😢', 'angry' => '😡', 'laughing' => '😂']; @endphp
             @foreach($reactionTypes as $type => $emoji)
                 <button
                     class="reaction-btn hover:-translate-y-1 cursor-pointer hover:scale-105 bg-white dark:bg-[#2f2f2f] rounded-full p-0.5 px-1 text-sm"

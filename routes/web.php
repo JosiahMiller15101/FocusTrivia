@@ -15,6 +15,7 @@ use App\Http\Controllers\QuestionCommentController;
 use Carbon\Carbon;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileCommentsController;
 
 
 //home
@@ -89,7 +90,7 @@ Route::post('/question/submit', [QuestionSubmissionController::class, 'store']);
 
 //Notification bell
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-
+Route::get('/api/notifications', [App\Http\Controllers\NotificationController::class, 'apiList'])->middleware('auth');
 
 Route::get('/check-time', function () {
     return [
@@ -99,9 +100,13 @@ Route::get('/check-time', function () {
     ];
 });
 
-//404 test
-Route::fallback(function () {
-    return response()->view('errors.404', [], 404);
+// Profile comments
+Route::post('/profile/{user}/comment', [ProfileCommentsController::class, 'store'])->name('profile.comment');
+Route::get('/profile/{user}/comments', [ProfileCommentsController::class, 'index'])->name('profile.comments');
+
+//419 test
+Route::get('/test-419', function () {
+    abort(419);
 });
 
 //500 test
@@ -111,3 +116,13 @@ Route::get('/test-500', function () {
 
 // Abandon question submission
 Route::post('/question/abandon', [QuestionSubmissionController::class, 'abandon'])->name('question.abandon');
+
+//404 test 
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
+
+//speed test
+Route::get('speed-test', function () {
+    dd('Speed test route');
+});

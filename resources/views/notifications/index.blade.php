@@ -16,7 +16,7 @@
       <div class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-2 ring-gray-400
             @if($note->type === 'reply') border-blue-500
             @elseif($note->type === 'reaction') border-yellow-500
-            @else border-gray-300 @endif
+            @else border-gray-400 @endif
             rounded hover:shadow-md transition-all">
 
 
@@ -26,6 +26,8 @@
             💬
           @elseif($note->type === 'reaction')
             🎯
+          @else
+            🔔
           @endif
         </div>
 
@@ -33,21 +35,33 @@
         <div class="flex-1">
           @if($note->type === 'reply')
             <p class="text-sm text-black">{{ $note->message }}</p>
-            <p class="text-xs text-gray-700 mt-1 italic">
-              "{{ optional(optional($note->comment)->replies)->first()->comment ?? ($note->comment->comment ?? '') }}"
-            </p>
+            @if($note->comment)
+              <p class="text-xs text-gray-700 mt-1 italic">
+                "{{ optional(optional($note->comment)->replies)->first()->comment ?? ($note->comment->comment ?? '') }}"
+              </p>
+            @endif
           @elseif($note->type === 'reaction')
             <p class="text-sm text-black">{{ $note->message }}</p>
             <span>
               {{ $emojiMap[$note->reaction_type] ?? '' }}
             </span>
+            @if($note->comment)
               <p class="text-xs text-gray-700 mt-1 italic">Comment: "{{ $note->comment->comment }}"</p>
+            @endif
+            <!-- profile comments -->
+            @else
+            <p class="text-sm text-black">{{ $note->message }}</p>
           @endif
-          <p class="text-xs text-blue-600 underline mt-1 italic">
-            <a href="/question">
-            Question: {{ $note->comment->question->question }}
-            </a>
-          </p>
+          
+          @if($note->comment && $note->comment->question && ($note->type == 'reply' || $note->type === 'reaction'))
+            <p class="text-xs text-blue-600 underline mt-1 italic">
+              <a href="/question">
+              Question: {{ $note->comment->question->question }}
+              </a>
+            </p>
+          @else
+            <p class="text-xs text-muted mt-1 italic">Question not available</p>
+          @endif
           <p class="text-xs text-gray-600 mt-1">{{ $note->created_at->diffForHumans() }}</p>
         </div>
 

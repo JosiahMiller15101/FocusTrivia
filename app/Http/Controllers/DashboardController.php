@@ -27,13 +27,7 @@ class DashboardController extends Controller
         
         $perPage = 3;
         $page = request('page', 1);
-        $recentActivity = new LengthAwarePaginator(
-        $history->forPage($page, $perPage)->values(),
-        $history->count(),
-        $perPage,
-        $page,
-        ['path' => request()->url(), 'query' => request()->query()]
-    );
+        $recentActivity = $this->getRecentSubmissions($user->id);
 
         // Build department player table and rank like SelectDepartmentDashboardController
         $departmentUsers = User::with('submissions')
@@ -149,8 +143,7 @@ class DashboardController extends Controller
         return QuestionSubmission::with('question')
             ->where('user_id', $userId)
             ->orderByDesc('submitted_at')
-            ->take(10)
-            ->get();
+            ->paginate(4);
     }
 
     public function calculateStreak($userId)
