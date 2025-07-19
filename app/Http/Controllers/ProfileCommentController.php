@@ -17,7 +17,7 @@ class ProfileCommentController extends Controller
         ]);
 
         $comment = ProfileComment::create([
-            'comment' => $request->comment,
+            'comment' => $request->input('comment'),
             'user_id' => $userId,
             'author_id' => auth()->id(),
         ]);
