@@ -42,7 +42,7 @@ class ProfileCommentController extends Controller
 
         $user = User::findOrFail($userId);
 
-        return view('profileComment', compact('comments', 'user'));
+        return view('profileComments', compact('comments', 'user'));
     }
 
     public function notifications($userId)
