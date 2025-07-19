@@ -86,10 +86,11 @@
               @endforelse
             </div>
               @csrf
-            <form>
-                <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Post a comment..." required></textarea>
-                <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
-              </form>
+            <form method="POST" action="{{ route('profile.comment', ['user' => $dashboardUser->id]) }}">
+              @csrf
+              <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Post a comment..." required></textarea>
+              <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
+            </form>
         </div>
       </div>
     </div>
