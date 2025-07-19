@@ -15,7 +15,7 @@ use App\Http\Controllers\QuestionCommentController;
 use Carbon\Carbon;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ProfileCommentsController;
+use App\Http\Controllers\ProfileCommentController;
 
 
 //home
@@ -101,8 +101,8 @@ Route::get('/check-time', function () {
 });
 
 // Profile comments
-Route::post('/profile/{user}/comment', [ProfileCommentsController::class, 'store'])->name('profile.comment');
-Route::get('/profile/{user}/comments', [ProfileCommentsController::class, 'index'])->name('profile.comments');
+Route::post('/profile/{user}/comment', [ProfileCommentController::class, 'store'])->name('profile.comment');
+Route::get('/profile/{user}/comments', [ProfileCommentController::class, 'index'])->name('profile.comments');
 
 //419 test
 Route::get('/test-419', function () {

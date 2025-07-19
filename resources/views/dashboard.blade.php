@@ -1,5 +1,5 @@
 @php
-  use App\Models\ProfileComments;
+  use App\Models\ProfileComment;
 @endphp
 <x-layout>
   <x-slot name="heading">
@@ -54,7 +54,7 @@
             </div>
           </div>
           <div class="w-7/8 border-t border-gray-300 mt-4 mx-auto"></div>
-            <?php $recentComments = ProfileComments::with('author')->where('user_id', $dashboardUser->id)->latest()->take(2)->get(); ?>
+            <?php $recentComments = ProfileComment::with('author')->where('user_id', $dashboardUser->id)->latest()->take(2)->get(); ?>
             <div class="mt-2 space-y-3 p-4 bg-white rounded mb-2">
               <h3 class="text-lg font-semibold mb-2">Profile Posts - <a href="{{ route('profile.comments', ['user' => $dashboardUser->id]) }}" class="text-xs text-blue-600 underline">View All Profile Posts</a></h3>
               @forelse($recentComments as $comment)

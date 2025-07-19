@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\ProfileComment; 
 
 
 class DashboardController extends Controller

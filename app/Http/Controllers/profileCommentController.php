@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ProfileComments;
+use App\Models\ProfileComment;
 use App\Models\Notification;
 use App\Models\User;
 
-class ProfileCommentsController extends Controller
+class ProfileCommentController extends Controller
 {
     public function store(Request $request, $userId)
     {
@@ -16,7 +16,7 @@ class ProfileCommentsController extends Controller
             'comment' => 'required|string|max:1000',
         ]);
 
-        $comment = ProfileComments::create([
+        $comment = ProfileComment::create([
             'comment' => $request->comment,
             'user_id' => $userId,
             'author_id' => auth()->id(),
@@ -35,19 +35,19 @@ class ProfileCommentsController extends Controller
 
     public function index($userId)
     {
-        $comments = ProfileComments::with('author')
+        $comments = ProfileComment::with('author')
         ->where('user_id', $userId)
         ->latest()
         ->paginate(10);
 
         $user = User::findOrFail($userId);
 
-        return view('profileComments', compact('comments', 'user'));
+        return view('profileComment', compact('comments', 'user'));
     }
 
     public function notifications($userId)
     {
-        $comments = ProfileComments::with('author')
+        $comments = ProfileComment::with('author')
         ->where('user_id', $userId)
         ->latest()
         ->paginate(10);
