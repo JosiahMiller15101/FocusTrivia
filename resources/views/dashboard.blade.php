@@ -58,7 +58,7 @@
             <div class="mt-2 space-y-3 p-4 bg-white rounded mb-2">
               <h3 class="text-lg font-semibold mb-2">Profile Posts - <a href="{{ route('profile.comments', ['user' => $dashboardUser->id]) }}" class="text-xs text-blue-600 underline">View All Profile Posts</a></h3>
               @forelse($recentComments as $comment)
-                <div class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-1 ring-gray-400 border-gray-400 rounded hover:shadow-md transition-all">
+                <div class="flex items-start gap-3 p-4 bg-white shadow-lg border-l-4 ring-1 ring-gray-400 border-gray-400 rounded hover:shadow-md transition-all relative">
                   {{-- Author profile image --}}
                   <div>
                     @php
@@ -76,8 +76,15 @@
                   <div class="flex-1">
                     <div class="font-semibold text-gray-800">{{ $comment->author->first_name }} {{ $comment->author->last_name }}</div>
                     <p class="text-sm text-black mt-1">{{ $comment->comment }}</p>
-                    <p class="text-xs text-gray-600 mt-1">{{ $comment->created_at->diffForHumans() }}</p>
+                    <p class="text-xs text-gray-600 mt-1">{{ $comment->created_at->diffForHumans() }}<a href="{{ route('profile.comments', ['user' => $dashboardUser->id]) }}" class="text-xs text-blue-600 underline absolute bottom-2 right-2">Reply/View Replies</a></p>
                   </div>
+                  @if(Auth::id() === $comment->author_id)
+                    <form method="POST" action="{{ route('profile.comment.delete', $comment->id) }}" class="absolute top-2 right-2">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="text-xs text-red-600 rounded hover:underline ml-2">Delete</button>
+                    </form>
+                  @endif
                 </div>
               @empty
                 <div class="p-6 bg-white rounded shadow text-gray-500 text-center">
@@ -85,11 +92,10 @@
                 </div>
               @endforelse
             </div>
-              @csrf
-            <form method="POST" action="{{ route('profile.comment', ['user' => $dashboardUser->id]) }}">
+            <form id="dashboard-comment-form" method="POST" action="{{ route('profile.comment', ['user' => $dashboardUser->id]) }}">
               @csrf
               <textarea name="comment" rows="2" class="w-full border rounded p-2 mb-2" placeholder="Post a comment..." required></textarea>
-              <button type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
+              <button id="postCommentBtn" type="submit" class="px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-500">Post Comment</button>
             </form>
         </div>
       </div>
@@ -220,7 +226,11 @@
                 Save Changes
             </button>
         </form>
-        <script>
+      </div>
+      @endif
+    </div>
+  </div>
+   <script>
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const input = document.getElementById(this.dataset.target);
@@ -236,8 +246,20 @@
             });
         });
         </script>
-      </div>
-      @endif
-    </div>
-  </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            var commentForm = document.getElementById('dashboard-comment-form');
+            if (commentForm) {
+              commentForm.addEventListener("submit", function (e) {
+                var btn = commentForm.querySelector('button[type="submit"]');
+                if (btn) {
+                  btn.disabled = true;
+                  // Force reflow to ensure UI updates before changing text
+                  btn.offsetHeight;
+                  btn.innerText = 'Posting...';
+                }
+              });
+            }
+          });
+        </script>
 </x-layout>

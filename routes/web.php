@@ -103,6 +103,7 @@ Route::get('/check-time', function () {
 // Profile comments
 Route::post('/profile/{user}/comment', [ProfileCommentController::class, 'store'])->name('profile.comment');
 Route::get('/profile/{user}/comments', [ProfileCommentController::class, 'index'])->name('profile.comments');
+Route::delete('/profile/comment/{id}', [ProfileCommentController::class, 'destroy'])->name('profile.comment.delete');
 
 //419 test
 Route::get('/test-419', function () {

@@ -20,6 +20,7 @@ class ProfileCommentController extends Controller
             'comment' => $request->input('comment'),
             'user_id' => $userId,
             'author_id' => auth()->id(),
+            'parent_id' => $request->input('parent_id'), 
         ]);
 
         Notification::create([
@@ -27,7 +28,7 @@ class ProfileCommentController extends Controller
             'type' => 'profile_comment',
             'message' => auth()->user()->first_name . ' ' . auth()->user()->last_name . ' left a comment on your dashboard profile.',
             'read' => false,
-            'comment_id' => $comment->id, // Associate notification with the comment
+            'comment_id' => null, // No question_comment association for profile comments
         ]);
 
         return redirect()->back()->with('success', 'Comment posted!');
@@ -35,8 +36,9 @@ class ProfileCommentController extends Controller
 
     public function index($userId)
     {
-        $comments = ProfileComment::with('author')
+        $comments = ProfileComment::with(['author', 'replies.author'])
         ->where('user_id', $userId)
+        ->whereNull('parent_id') 
         ->latest()
         ->paginate(10);
 
@@ -55,6 +57,16 @@ class ProfileCommentController extends Controller
         $user = User::findOrFail($userId);
 
         return view('notifications.index', compact('comments', 'user'));
+    }
+
+    public function destroy($id)
+    {
+        $comment = ProfileComment::findOrFail($id);
+        if (auth()->id() !== $comment->author_id) {
+            abort(403, 'Unauthorized');
+        }
+        $comment->delete();
+        return back()->with('success', 'Comment deleted.');
     }
 }
 

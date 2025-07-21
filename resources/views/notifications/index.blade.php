@@ -53,14 +53,16 @@
             <p class="text-sm text-black">{{ $note->message }}</p>
           @endif
           
-          @if($note->comment && $note->comment->question && ($note->type == 'reply' || $note->type === 'reaction'))
-            <p class="text-xs text-blue-600 underline mt-1 italic">
-              <a href="/question">
-              Question: {{ $note->comment->question->question }}
-              </a>
-            </p>
-          @else
-            <p class="text-xs text-muted mt-1 italic">Question not available</p>
+          @if($note->type == 'reply' || $note->type === 'reaction')
+            @if($note->comment && $note->comment->question)
+              <p class="text-xs text-blue-600 underline mt-1 italic">
+                <a href="/question">
+                Question: {{ $note->comment->question->question }}
+                </a>
+              </p>
+            @else
+              <p class="text-xs text-muted mt-1 italic">Question not available</p>
+            @endif
           @endif
           <p class="text-xs text-gray-600 mt-1">{{ $note->created_at->diffForHumans() }}</p>
         </div>

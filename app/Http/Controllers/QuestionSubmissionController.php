@@ -18,14 +18,18 @@ class QuestionSubmissionController extends Controller
         ]);
 
         $user = Auth::user();
-        $question = Question::find($request->question_id);
+        $question = Question::find($request->input('question_id'));
+
+        if (!$question || !($question instanceof Question)) {
+            return back()->with('error', 'Question not found.');
+        }
 
         // Check if the user already submitted an answer for this question
         $alreadySubmitted = QuestionSubmission::where('user_id', $user->id)
-            ->where('question_id', $question->id)
+            ->where('question_id', $question->getKey())
             ->exists();
 
-        $isCorrect = trim(strtolower($request->answer)) === trim(strtolower($question->correct_answer));
+        $isCorrect = strtolower(trim($request->input('answer'))) === strtolower(trim($question->correct_answer));
 
         try {
             QuestionSubmission::create([
