@@ -70,7 +70,7 @@
                     <form id="reply-form-{{ $reply->id }}" method="POST" action="{{ route('profile.comment', ['user' => $user->id]) }}" class="hidden mt-2">
                       @csrf
                       <input type="hidden" name="parent_id" value="{{ $reply->id }}">
-                      <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Reply..."></textarea>
+                      <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Comments are limited to 1000 characters"></textarea>
                       <button class="px-2 py-1 bg-slate-600 text-white rounded mt-1">Post</button>
                     </form>
                   </div>
@@ -113,7 +113,7 @@
                               <form id="reply-form-{{ $childReply->id }}" method="POST" action="{{ route('profile.comment', ['user' => $user->id]) }}" class="hidden mt-2">
                                 @csrf
                                 <input type="hidden" name="parent_id" value="{{ $childReply->id }}">
-                                <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Reply..."></textarea>
+                                <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Comments are limited to 1000 characters"></textarea>
                                 <button class="px-2 py-1 bg-slate-600 text-white rounded mt-1">Post</button>
                               </form>
                             </div>
@@ -156,7 +156,7 @@
                                         <form id="reply-form-{{ $grandChildReply->id }}" method="POST" action="{{ route('profile.comment', ['user' => $user->id]) }}" class="hidden mt-2">
                                           @csrf
                                           <input type="hidden" name="parent_id" value="{{ $grandChildReply->id }}">
-                                          <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Reply..."></textarea>
+                                          <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Comments are limited to 1000 characters"></textarea>
                                           <button class="px-2 py-1 bg-slate-600 text-white rounded mt-1">Post</button>
                                         </form>
                                       </div>
@@ -180,7 +180,7 @@
             <form id="reply-form-{{ $comment->id }}" method="POST" action="{{ route('profile.comment', ['user' => $user->id]) }}" class="hidden mt-2">
               @csrf
               <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-              <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Reply..."></textarea>
+              <textarea name="comment" class="w-full p-2 border rounded" rows="2" placeholder="Comments are limited to 1000 characters"></textarea>
               <button class="px-2 py-1 bg-slate-600 text-white rounded mt-1">Post</button>
             </form>
           </div>
@@ -195,4 +195,17 @@
       {{ $comments->links() }}
     </div>
   </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('form[action*="profile.comment"]').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Posting...';
+      }
+    });
+  });
+});
+</script>
 </x-layout>

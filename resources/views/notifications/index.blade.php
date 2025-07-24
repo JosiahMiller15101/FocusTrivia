@@ -33,24 +33,31 @@
 
         {{-- Notification message --}}
         <div class="flex-1">
+          <!-- replies -->
           @if($note->type === 'reply')
             <p class="text-sm text-black">{{ $note->message }}</p>
-            @if($note->comment)
-              <p class="text-xs text-gray-700 mt-1 italic">
-                "{{ optional(optional($note->comment)->replies)->first()->comment ?? ($note->comment->comment ?? '') }}"
-              </p>
+            @if($note->comment_content)
+              <p class="text-xs text-gray-700 mt-1 italic">{{ $note->comment_content }}</p>
+            @elseif($note->comment && $note->comment->comment)
+              <p class="text-xs text-gray-700 mt-1 italic">{{ $note->comment->comment }}</p>
             @endif
+          <!-- reactions -->
           @elseif($note->type === 'reaction')
             <p class="text-sm text-black">{{ $note->message }}</p>
             <span>
               {{ $emojiMap[$note->reaction_type] ?? '' }}
             </span>
-            @if($note->comment)
+            @if($note->comment_content)
+              <p class="text-xs text-gray-700 mt-1 italic">{{ $note->comment_content }}</p>
+            @elseif($note->comment && $note->comment->comment)
               <p class="text-xs text-gray-700 mt-1 italic">Comment: "{{ $note->comment->comment }}"</p>
             @endif
-            <!-- profile comments -->
-            @else
+          <!-- profile comments -->
+          @else
             <p class="text-sm text-black">{{ $note->message }}</p>
+            @if($note->comment_content)
+              <p class="text-xs text-gray-700 mt-1 italic">{{ $note->comment_content }}</p>
+            @endif
           @endif
           
           @if($note->type == 'reply' || $note->type === 'reaction')

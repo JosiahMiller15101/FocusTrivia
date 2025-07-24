@@ -17,4 +17,9 @@ class Notification extends Model
     {
         return $this->belongsTo(\App\Models\QuestionComment::class, 'comment_id');
     }
+
+    public function profileComment()
+    {
+        return $this->belongsTo(ProfileComment::class, 'profile_comment_id');
+    }
 }
